@@ -1,0 +1,22 @@
+{
+  "item.elementalstaves.fire_staff": "Fire Staff",
+  "item.elementalstaves.lightning_staff": "Lightning Staff",
+  "item.elementalstaves.earth_staff": "Earth Staff",
+
+  "tooltip.elementalstaves.fire_staff.1": "Launches a swift fire projectile.",
+  "tooltip.elementalstaves.fire_staff.2": "Cooldown: 1.2 sec.  Cost: 1 durability.",
+  "tooltip.elementalstaves.lightning_staff.1": "Strikes a block in your aim (up to 32 blocks).",
+  "tooltip.elementalstaves.lightning_staff.2": "Cooldown: 4 sec.  Cost: 2 durability.",
+  "tooltip.elementalstaves.earth_staff.1": "Use on a block to select it; use a face to move it.",
+  "tooltip.elementalstaves.earth_staff.2": "Sneak-use to replace selection. Cost: 3 durability.",
+
+  "message.elementalstaves.lightning.no_target": "§eThe Lightning Staff needs a block target within 32 blocks.",
+  "message.elementalstaves.common.protected": "§cThe staff's power cannot be used here.",
+  "message.elementalstaves.earth.not_movable": "§cThis block cannot be moved by the Earth Staff.",
+  "message.elementalstaves.earth.selected": "§aBlock selected. Use a block face to move it into the adjacent empty space.",
+  "message.elementalstaves.earth.too_far": "§eSource and target must be near you and within 16 blocks of one another.",
+  "message.elementalstaves.earth.invalid_destination": "§cThe block cannot be moved outside the world border.",
+  "message.elementalstaves.earth.source_changed": "§eThe selected block changed; selection cleared.",
+  "message.elementalstaves.earth.destination_blocked": "§eThe destination must be empty and valid for this block.",
+  "message.elementalstaves.earth.moved": "§aBlock moved."
+}

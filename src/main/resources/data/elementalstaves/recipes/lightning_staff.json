@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "  A",
+    " R ",
+    "S  "
+  ],
+  "key": {
+    "A": { "item": "minecraft:amethyst_shard" },
+    "R": { "item": "minecraft:lightning_rod" },
+    "S": { "item": "minecraft:stick" }
+  },
+  "result": { "item": "elementalstaves:lightning_staff" }
+}
