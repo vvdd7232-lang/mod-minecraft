@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_elemental_ingot": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "elementalstaves:elemental_ingot"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "elementalstaves:elemental_shovel"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "rewards": {
+    "recipes": [
+      "elementalstaves:elemental_shovel"
+    ]
+  },
+  "requirements": [
+    [
+      "has_elemental_ingot",
+      "has_the_recipe"
+    ]
+  ]
+}

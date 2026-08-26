@@ -1,0 +1,10 @@
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+    }
+}
+
+plugins {
+    // Resolves the Java 21 toolchain automatically in supported IDEs/CI environments.
+    id 'org.gradle.toolchains.foojay-resolver-convention' version '1.0.0'
+}
