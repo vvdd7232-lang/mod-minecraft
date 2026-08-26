@@ -48,15 +48,15 @@ public final class ElementalStaves {
     // Natural and storage blocks. The ore requires at least an iron pickaxe to drop its resource.
     public static final DeferredBlock<Block> ELEMENTAL_ORE = BLOCKS.registerSimpleBlock(
             "elemental_ore",
-            BlockBehaviour.Properties.ofFullCopy(Blocks.DIAMOND_ORE).requiresCorrectToolForDrops()
+            copiedMineableProperties(Blocks.DIAMOND_ORE)
     );
     public static final DeferredBlock<Block> DEEPSLATE_ELEMENTAL_ORE = BLOCKS.registerSimpleBlock(
             "deepslate_elemental_ore",
-            BlockBehaviour.Properties.ofFullCopy(Blocks.DEEPSLATE_DIAMOND_ORE).requiresCorrectToolForDrops()
+            copiedMineableProperties(Blocks.DEEPSLATE_DIAMOND_ORE)
     );
     public static final DeferredBlock<Block> ELEMENTAL_BLOCK = BLOCKS.registerSimpleBlock(
             "elemental_block",
-            BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK).requiresCorrectToolForDrops()
+            copiedMineableProperties(Blocks.IRON_BLOCK)
     );
 
     public static final DeferredItem<BlockItem> ELEMENTAL_ORE_ITEM = ITEMS.registerSimpleBlockItem(ELEMENTAL_ORE);
@@ -130,6 +130,14 @@ public final class ElementalStaves {
         ITEMS.register(modEventBus);
         modEventBus.addListener(this::addCreativeItems);
         LOGGER.info("Elemental Staves loaded: staves, Elemental Steel ore, tools and armor are ready.");
+    }
+
+    /**
+     * Preserve vanilla physical settings while binding against the real 1.21.1
+     * {@code ofFullCopy(BlockBehaviour)} descriptor, rather than a Block-specific overload.
+     */
+    private static BlockBehaviour.Properties copiedMineableProperties(BlockBehaviour source) {
+        return BlockBehaviour.Properties.ofFullCopy(source).requiresCorrectToolForDrops();
     }
 
     private static Item.Properties armorProperties(ArmorItem.Type type) {
