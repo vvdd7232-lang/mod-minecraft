@@ -66,7 +66,7 @@ public final class EarthStaffItem extends BaseStaffItem {
 
         Level level = context.getLevel();
         ItemStack stack = context.getItemInHand();
-        if (level.isClientSide()) {
+        if (level.isClientSide) {
             return InteractionResult.SUCCESS;
         }
         if (!(level instanceof ServerLevel serverLevel) || !(player instanceof ServerPlayer serverPlayer)) {

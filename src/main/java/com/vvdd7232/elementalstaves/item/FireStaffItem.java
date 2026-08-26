@@ -32,7 +32,7 @@ public final class FireStaffItem extends BaseStaffItem {
         if (player.getCooldowns().isOnCooldown(this)) {
             return InteractionResultHolder.fail(stack);
         }
-        if (level.isClientSide()) {
+        if (level.isClientSide) {
             return InteractionResultHolder.sidedSuccess(stack, true);
         }
         if (!(level instanceof ServerLevel serverLevel) || !(player instanceof ServerPlayer serverPlayer)) {
