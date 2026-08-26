@@ -1,0 +1,8 @@
+{
+  "replace": false,
+  "values": [
+    "elementalstaves:elemental_ore",
+    "elementalstaves:deepslate_elemental_ore",
+    "elementalstaves:elemental_block"
+  ]
+}

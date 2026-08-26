@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": ["EEE", "EEE", "EEE"],
+  "key": {
+    "E": {"item": "elementalstaves:elemental_ingot"}
+  },
+  "result": {"id": "elementalstaves:elemental_block"}
+}

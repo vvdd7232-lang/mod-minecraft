@@ -2,14 +2,12 @@
   "item.elementalstaves.fire_staff": "Fire Staff",
   "item.elementalstaves.lightning_staff": "Lightning Staff",
   "item.elementalstaves.earth_staff": "Earth Staff",
-
   "tooltip.elementalstaves.fire_staff.1": "Launches a swift fire projectile.",
   "tooltip.elementalstaves.fire_staff.2": "Cooldown: 1.2 sec.  Cost: 1 durability.",
   "tooltip.elementalstaves.lightning_staff.1": "Strikes a block in your aim (up to 32 blocks).",
   "tooltip.elementalstaves.lightning_staff.2": "Cooldown: 4 sec.  Cost: 2 durability.",
   "tooltip.elementalstaves.earth_staff.1": "Use on a block to select it; use a face to move it.",
   "tooltip.elementalstaves.earth_staff.2": "Sneak-use to replace selection. Cost: 3 durability.",
-
   "message.elementalstaves.lightning.no_target": "§eThe Lightning Staff needs a block target within 32 blocks.",
   "message.elementalstaves.common.protected": "§cThe staff's power cannot be used here.",
   "message.elementalstaves.earth.not_movable": "§cThis block cannot be moved by the Earth Staff.",
@@ -18,5 +16,19 @@
   "message.elementalstaves.earth.invalid_destination": "§cThe block cannot be moved outside the world border.",
   "message.elementalstaves.earth.source_changed": "§eThe selected block changed; selection cleared.",
   "message.elementalstaves.earth.destination_blocked": "§eThe destination must be empty and valid for this block.",
-  "message.elementalstaves.earth.moved": "§aBlock moved."
+  "message.elementalstaves.earth.moved": "§aBlock moved.",
+  "block.elementalstaves.elemental_ore": "Elemental Ore",
+  "block.elementalstaves.deepslate_elemental_ore": "Deepslate Elemental Ore",
+  "block.elementalstaves.elemental_block": "Block of Elemental Steel",
+  "item.elementalstaves.raw_elemental": "Raw Elemental Crystal",
+  "item.elementalstaves.elemental_ingot": "Elemental Steel Ingot",
+  "item.elementalstaves.elemental_sword": "Elemental Steel Sword",
+  "item.elementalstaves.elemental_pickaxe": "Elemental Steel Pickaxe",
+  "item.elementalstaves.elemental_axe": "Elemental Steel Axe",
+  "item.elementalstaves.elemental_shovel": "Elemental Steel Shovel",
+  "item.elementalstaves.elemental_hoe": "Elemental Steel Hoe",
+  "item.elementalstaves.elemental_helmet": "Elemental Steel Helmet",
+  "item.elementalstaves.elemental_chestplate": "Elemental Steel Chestplate",
+  "item.elementalstaves.elemental_leggings": "Elemental Steel Leggings",
+  "item.elementalstaves.elemental_boots": "Elemental Steel Boots"
 }

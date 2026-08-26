@@ -2,14 +2,12 @@
   "item.elementalstaves.fire_staff": "Огненный посох",
   "item.elementalstaves.lightning_staff": "Молниевый посох",
   "item.elementalstaves.earth_staff": "Земной посох",
-
   "tooltip.elementalstaves.fire_staff.1": "Выпускает стремительный огненный снаряд.",
   "tooltip.elementalstaves.fire_staff.2": "Перезарядка: 1,2 сек.  Расход: 1 прочность.",
   "tooltip.elementalstaves.lightning_staff.1": "Бьёт молнией по блоку в прицеле (до 32 блоков).",
   "tooltip.elementalstaves.lightning_staff.2": "Перезарядка: 4 сек.  Расход: 2 прочности.",
   "tooltip.elementalstaves.earth_staff.1": "ПКМ по блоку — выбрать. ПКМ по грани — переместить.",
   "tooltip.elementalstaves.earth_staff.2": "Shift+ПКМ заменяет выбранный блок. Расход: 3 прочности.",
-
   "message.elementalstaves.lightning.no_target": "§eМолниевому посоху нужна цель-блок в радиусе 32 блоков.",
   "message.elementalstaves.common.protected": "§cВ этом месте нельзя использовать силу посоха.",
   "message.elementalstaves.earth.not_movable": "§cЭтот блок нельзя перемещать земным посохом.",
@@ -18,5 +16,19 @@
   "message.elementalstaves.earth.invalid_destination": "§cНельзя переместить блок за границу мира.",
   "message.elementalstaves.earth.source_changed": "§eВыбранный блок изменился; выбор сброшен.",
   "message.elementalstaves.earth.destination_blocked": "§eЦель должна быть пустой и подходить для этого блока.",
-  "message.elementalstaves.earth.moved": "§aБлок перемещён."
+  "message.elementalstaves.earth.moved": "§aБлок перемещён.",
+  "block.elementalstaves.elemental_ore": "Стихийная руда",
+  "block.elementalstaves.deepslate_elemental_ore": "Глубинносланцевая стихийная руда",
+  "block.elementalstaves.elemental_block": "Блок стихийной стали",
+  "item.elementalstaves.raw_elemental": "Необработанный стихийный кристалл",
+  "item.elementalstaves.elemental_ingot": "Слиток стихийной стали",
+  "item.elementalstaves.elemental_sword": "Меч из стихийной стали",
+  "item.elementalstaves.elemental_pickaxe": "Кирка из стихийной стали",
+  "item.elementalstaves.elemental_axe": "Топор из стихийной стали",
+  "item.elementalstaves.elemental_shovel": "Лопата из стихийной стали",
+  "item.elementalstaves.elemental_hoe": "Мотыга из стихийной стали",
+  "item.elementalstaves.elemental_helmet": "Шлем из стихийной стали",
+  "item.elementalstaves.elemental_chestplate": "Нагрудник из стихийной стали",
+  "item.elementalstaves.elemental_leggings": "Поножи из стихийной стали",
+  "item.elementalstaves.elemental_boots": "Ботинки из стихийной стали"
 }

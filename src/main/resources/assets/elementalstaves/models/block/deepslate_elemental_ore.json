@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "elementalstaves:block/deepslate_elemental_ore"
+  }
+}
