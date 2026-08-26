@@ -113,7 +113,7 @@ public final class EarthStaffItem extends BaseStaffItem {
         BlockState sourceState = level.getBlockState(source);
 
         if (!withinRange(player, source) || !withinRange(player, destination)
-                || source.distSqr(destination) > MAX_MOVE_DISTANCE * MAX_MOVE_DISTANCE) {
+                || squaredBlockDistance(source, destination) > MAX_MOVE_DISTANCE * MAX_MOVE_DISTANCE) {
             player.displayClientMessage(Component.translatable("message.elementalstaves.earth.too_far"), true);
             return InteractionResult.FAIL;
         }
@@ -155,6 +155,14 @@ public final class EarthStaffItem extends BaseStaffItem {
 
     private static boolean withinRange(Player player, BlockPos pos) {
         return player.distanceToSqr(pos.getCenter()) <= PLAYER_RANGE * PLAYER_RANGE;
+    }
+
+    /** Avoids relying on overload resolution for the BlockPos/Vec3i distance helpers. */
+    private static double squaredBlockDistance(BlockPos first, BlockPos second) {
+        double dx = (double) first.getX() - second.getX();
+        double dy = (double) first.getY() - second.getY();
+        double dz = (double) first.getZ() - second.getZ();
+        return dx * dx + dy * dy + dz * dz;
     }
 
     private static boolean isMovable(Level level, BlockPos pos, BlockState state) {
