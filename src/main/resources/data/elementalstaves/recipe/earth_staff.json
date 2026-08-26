@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "  M",
+    " C ",
+    "S  "
+  ],
+  "key": {
+    "M": {
+      "item": "minecraft:moss_block"
+    },
+    "C": {
+      "item": "minecraft:copper_ingot"
+    },
+    "S": {
+      "item": "minecraft:stick"
+    }
+  },
+  "result": {
+    "id": "elementalstaves:earth_staff"
+  }
+}

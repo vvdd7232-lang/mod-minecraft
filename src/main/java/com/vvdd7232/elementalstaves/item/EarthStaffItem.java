@@ -1,29 +1,32 @@
 package com.vvdd7232.elementalstaves.item;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.item.TooltipContext;
-import net.minecraft.block.Blocks;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.particle.ParticleTypes;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.text.Text;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
-import org.jetbrains.annotations.Nullable;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.CustomData;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
 import java.util.Set;
 
 /**
- * Moves one ordinary block at a time. A source is stored on the ItemStack, so each
- * staff may hold its own selection and players cannot accidentally share a target.
+ * Moves one ordinary block at a time. A source is stored in the item's custom
+ * data component, so every individual staff keeps an isolated selection.
  */
 public final class EarthStaffItem extends BaseStaffItem {
     private static final String SOURCE_POS_KEY = "EarthSourcePos";
@@ -33,7 +36,7 @@ public final class EarthStaffItem extends BaseStaffItem {
     private static final int COOLDOWN_TICKS = 12;
     private static final int DURABILITY_COST = 3;
 
-    /* Blocks that should never be movable even when they do not expose a block entity. */
+    /* Blocks that must never be movable even when they do not expose a block entity. */
     private static final Set<Block> PROTECTED_BLOCKS = Set.of(
             Blocks.BEDROCK,
             Blocks.BARRIER,
@@ -55,134 +58,152 @@ public final class EarthStaffItem extends BaseStaffItem {
     }
 
     @Override
-    public ActionResult useOnBlock(net.minecraft.item.ItemUsageContext context) {
-        PlayerEntity player = context.getPlayer();
+    public InteractionResult useOn(UseOnContext context) {
+        Player player = context.getPlayer();
         if (player == null) {
-            return ActionResult.PASS;
+            return InteractionResult.PASS;
         }
 
-        World world = context.getWorld();
-        ItemStack stack = context.getStack();
-        if (world.isClient) {
-            return ActionResult.SUCCESS;
+        Level level = context.getLevel();
+        ItemStack stack = context.getItemInHand();
+        if (level.isClientSide()) {
+            return InteractionResult.SUCCESS;
+        }
+        if (!(level instanceof ServerLevel serverLevel) || !(player instanceof ServerPlayer serverPlayer)) {
+            return InteractionResult.PASS;
         }
 
-        BlockPos clickedPos = context.getBlockPos();
-        SourceSelection selected = readSelection(stack, world);
-        // Sneaking is an explicit, safe way to replace a previous selection.
-        if (player.isSneaking() || selected == null) {
-            return selectSource((ServerWorld) world, player, stack, clickedPos);
+        BlockPos clickedPos = context.getClickedPos();
+        SourceSelection selected = readSelection(stack, serverLevel);
+        // Sneak-use is an explicit and safe way to replace an old source selection.
+        if (player.isShiftKeyDown() || selected == null) {
+            return selectSource(serverLevel, serverPlayer, stack, clickedPos);
         }
-
-        if (player.getItemCooldownManager().isCoolingDown(this)) {
-            return ActionResult.FAIL;
+        if (player.getCooldowns().isOnCooldown(this)) {
+            return InteractionResult.FAIL;
         }
-        return moveSelectedBlock((ServerWorld) world, player, stack, context.getHand(), selected, clickedPos.offset(context.getSide()));
+        return moveSelectedBlock(serverLevel, serverPlayer, stack, context.getHand(), selected, clickedPos.relative(context.getClickedFace()));
     }
 
-    private ActionResult selectSource(ServerWorld world, PlayerEntity player, ItemStack stack, BlockPos source) {
-        BlockState state = world.getBlockState(source);
-        if (!world.canPlayerModifyAt(player, source)) {
-            player.sendMessage(Text.translatable("message.elementalstaves.common.protected"), true);
-            return ActionResult.FAIL;
+    private InteractionResult selectSource(ServerLevel level, ServerPlayer player, ItemStack stack, BlockPos source) {
+        BlockState state = level.getBlockState(source);
+        if (!level.mayInteract(player, source)) {
+            player.displayClientMessage(Component.translatable("message.elementalstaves.common.protected"), true);
+            return InteractionResult.FAIL;
         }
-        if (!isMovable(world, source, state)) {
-            player.sendMessage(Text.translatable("message.elementalstaves.earth.not_movable"), true);
-            return ActionResult.FAIL;
+        if (!isMovable(level, source, state)) {
+            player.displayClientMessage(Component.translatable("message.elementalstaves.earth.not_movable"), true);
+            return InteractionResult.FAIL;
         }
 
-        NbtCompound nbt = stack.getOrCreateNbt();
-        nbt.putLong(SOURCE_POS_KEY, source.asLong());
-        nbt.putString(SOURCE_DIMENSION_KEY, world.getRegistryKey().getValue().toString());
+        CompoundTag selectionData = getCustomDataCopy(stack);
+        selectionData.putLong(SOURCE_POS_KEY, source.asLong());
+        selectionData.putString(SOURCE_DIMENSION_KEY, level.dimension().location().toString());
+        stack.set(DataComponents.CUSTOM_DATA, CustomData.of(selectionData));
 
-        Vec3d center = Vec3d.ofCenter(source);
-        world.spawnParticles(ParticleTypes.HAPPY_VILLAGER, center.x, center.y, center.z, 12, 0.35D, 0.35D, 0.35D, 0.02D);
-        world.playSound(null, source, state.getSoundGroup().getHitSound(), SoundCategory.BLOCKS, 0.9F, 1.15F);
-        player.sendMessage(Text.translatable("message.elementalstaves.earth.selected"), true);
-        return ActionResult.SUCCESS;
+        Vec3 center = source.getCenter();
+        level.sendParticles(ParticleTypes.HAPPY_VILLAGER, center.x, center.y, center.z, 12, 0.35D, 0.35D, 0.35D, 0.02D);
+        level.playSound(null, source, state.getSoundType().getHitSound(), SoundSource.BLOCKS, 0.9F, 1.15F);
+        player.displayClientMessage(Component.translatable("message.elementalstaves.earth.selected"), true);
+        return InteractionResult.SUCCESS;
     }
 
-    private ActionResult moveSelectedBlock(ServerWorld world, PlayerEntity player, ItemStack stack, Hand hand, SourceSelection selection, BlockPos destination) {
+    private InteractionResult moveSelectedBlock(ServerLevel level, ServerPlayer player, ItemStack stack, InteractionHand hand, SourceSelection selection, BlockPos destination) {
         BlockPos source = selection.pos();
-        BlockState sourceState = world.getBlockState(source);
+        BlockState sourceState = level.getBlockState(source);
 
         if (!withinRange(player, source) || !withinRange(player, destination)
-                || source.getSquaredDistance(destination) > MAX_MOVE_DISTANCE * MAX_MOVE_DISTANCE) {
-            player.sendMessage(Text.translatable("message.elementalstaves.earth.too_far"), true);
-            return ActionResult.FAIL;
+                || source.distSqr(destination) > MAX_MOVE_DISTANCE * MAX_MOVE_DISTANCE) {
+            player.displayClientMessage(Component.translatable("message.elementalstaves.earth.too_far"), true);
+            return InteractionResult.FAIL;
         }
-        if (!world.canPlayerModifyAt(player, source) || !world.canPlayerModifyAt(player, destination)) {
-            player.sendMessage(Text.translatable("message.elementalstaves.common.protected"), true);
-            return ActionResult.FAIL;
+        if (!level.mayInteract(player, source) || !level.mayInteract(player, destination)) {
+            player.displayClientMessage(Component.translatable("message.elementalstaves.common.protected"), true);
+            return InteractionResult.FAIL;
         }
-        if (!world.isInBuildLimit(destination) || !world.getWorldBorder().contains(destination)) {
-            player.sendMessage(Text.translatable("message.elementalstaves.earth.invalid_destination"), true);
-            return ActionResult.FAIL;
+        if (!level.isInWorldBounds(destination) || !level.getWorldBorder().isWithinBounds(destination)) {
+            player.displayClientMessage(Component.translatable("message.elementalstaves.earth.invalid_destination"), true);
+            return InteractionResult.FAIL;
         }
-        if (!isMovable(world, source, sourceState)) {
+        if (!isMovable(level, source, sourceState)) {
             clearSelection(stack);
-            player.sendMessage(Text.translatable("message.elementalstaves.earth.source_changed"), true);
-            return ActionResult.FAIL;
+            player.displayClientMessage(Component.translatable("message.elementalstaves.earth.source_changed"), true);
+            return InteractionResult.FAIL;
         }
-        if (!world.getBlockState(destination).isAir() || !sourceState.canPlaceAt(world, destination)) {
-            player.sendMessage(Text.translatable("message.elementalstaves.earth.destination_blocked"), true);
-            return ActionResult.FAIL;
+        if (!level.getBlockState(destination).isAir() || !sourceState.canSurvive(level, destination)) {
+            player.displayClientMessage(Component.translatable("message.elementalstaves.earth.destination_blocked"), true);
+            return InteractionResult.FAIL;
         }
 
-        // Place first. If placement is rejected, the source remains untouched.
-        if (!world.setBlockState(destination, sourceState, Block.NOTIFY_ALL)) {
-            player.sendMessage(Text.translatable("message.elementalstaves.earth.destination_blocked"), true);
-            return ActionResult.FAIL;
+        // Place first. If placement is rejected, the source block stays untouched.
+        if (!level.setBlock(destination, sourceState, Block.UPDATE_ALL)) {
+            player.displayClientMessage(Component.translatable("message.elementalstaves.earth.destination_blocked"), true);
+            return InteractionResult.FAIL;
         }
-        world.setBlockState(source, Blocks.AIR.getDefaultState(), Block.NOTIFY_ALL);
+        level.setBlock(source, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
         clearSelection(stack);
 
-        Vec3d sourceCenter = Vec3d.ofCenter(source);
-        Vec3d destinationCenter = Vec3d.ofCenter(destination);
-        world.spawnParticles(ParticleTypes.CLOUD, sourceCenter.x, sourceCenter.y, sourceCenter.z, 10, 0.25D, 0.25D, 0.25D, 0.02D);
-        world.spawnParticles(ParticleTypes.POOF, destinationCenter.x, destinationCenter.y, destinationCenter.z, 14, 0.25D, 0.25D, 0.25D, 0.03D);
-        world.playSound(null, destination, sourceState.getSoundGroup().getPlaceSound(), SoundCategory.BLOCKS, 1.0F, 0.95F);
+        Vec3 sourceCenter = source.getCenter();
+        Vec3 destinationCenter = destination.getCenter();
+        level.sendParticles(ParticleTypes.CLOUD, sourceCenter.x, sourceCenter.y, sourceCenter.z, 10, 0.25D, 0.25D, 0.25D, 0.02D);
+        level.sendParticles(ParticleTypes.POOF, destinationCenter.x, destinationCenter.y, destinationCenter.z, 14, 0.25D, 0.25D, 0.25D, 0.03D);
+        level.playSound(null, destination, sourceState.getSoundType().getPlaceSound(), SoundSource.BLOCKS, 1.0F, 0.95F);
         completeCast(player, stack, hand, COOLDOWN_TICKS, DURABILITY_COST);
-        player.sendMessage(Text.translatable("message.elementalstaves.earth.moved"), true);
-        return ActionResult.SUCCESS;
+        player.displayClientMessage(Component.translatable("message.elementalstaves.earth.moved"), true);
+        return InteractionResult.SUCCESS;
     }
 
-    private static boolean withinRange(PlayerEntity player, BlockPos pos) {
-        return player.squaredDistanceTo(Vec3d.ofCenter(pos)) <= PLAYER_RANGE * PLAYER_RANGE;
+    private static boolean withinRange(Player player, BlockPos pos) {
+        return player.distanceToSqr(pos.getCenter()) <= PLAYER_RANGE * PLAYER_RANGE;
     }
 
-    private static boolean isMovable(World world, BlockPos pos, BlockState state) {
+    private static boolean isMovable(Level level, BlockPos pos, BlockState state) {
         return !state.isAir()
                 && state.getFluidState().isEmpty()
                 && !state.hasBlockEntity()
-                && state.getHardness(world, pos) >= 0.0F
+                && state.getDestroySpeed(level, pos) >= 0.0F
                 && !PROTECTED_BLOCKS.contains(state.getBlock());
     }
 
-    private static SourceSelection readSelection(ItemStack stack, World world) {
-        NbtCompound nbt = stack.getNbt();
-        if (nbt == null || !nbt.contains(SOURCE_POS_KEY) || !nbt.contains(SOURCE_DIMENSION_KEY)) {
+    private static SourceSelection readSelection(ItemStack stack, Level level) {
+        CustomData data = stack.get(DataComponents.CUSTOM_DATA);
+        if (data == null) {
             return null;
         }
-        if (!world.getRegistryKey().getValue().toString().equals(nbt.getString(SOURCE_DIMENSION_KEY))) {
-            // A position in another dimension is intentionally never used here.
+        CompoundTag tag = data.copyTag();
+        if (!tag.contains(SOURCE_POS_KEY) || !tag.contains(SOURCE_DIMENSION_KEY)) {
+            return null;
+        }
+        if (!level.dimension().location().toString().equals(tag.getString(SOURCE_DIMENSION_KEY))) {
+            // Never resolve a saved position in a different dimension.
             clearSelection(stack);
             return null;
         }
-        return new SourceSelection(BlockPos.fromLong(nbt.getLong(SOURCE_POS_KEY)));
+        return new SourceSelection(BlockPos.of(tag.getLong(SOURCE_POS_KEY)));
+    }
+
+    private static CompoundTag getCustomDataCopy(ItemStack stack) {
+        CustomData data = stack.get(DataComponents.CUSTOM_DATA);
+        return data == null ? new CompoundTag() : data.copyTag();
     }
 
     private static void clearSelection(ItemStack stack) {
-        NbtCompound nbt = stack.getNbt();
-        if (nbt == null) {
+        CustomData data = stack.get(DataComponents.CUSTOM_DATA);
+        if (data == null) {
             return;
         }
-        nbt.remove(SOURCE_POS_KEY);
-        nbt.remove(SOURCE_DIMENSION_KEY);
+        CompoundTag tag = data.copyTag();
+        tag.remove(SOURCE_POS_KEY);
+        tag.remove(SOURCE_DIMENSION_KEY);
+        if (tag.isEmpty()) {
+            stack.remove(DataComponents.CUSTOM_DATA);
+        } else {
+            stack.set(DataComponents.CUSTOM_DATA, CustomData.of(tag));
+        }
     }
 
     @Override
-    public void appendTooltip(ItemStack stack, @Nullable World world, List<Text> tooltip, TooltipContext context) {
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip, net.minecraft.world.item.TooltipFlag tooltipFlag) {
         addDescription(tooltip, "tooltip.elementalstaves.earth_staff.1", "tooltip.elementalstaves.earth_staff.2");
     }
 

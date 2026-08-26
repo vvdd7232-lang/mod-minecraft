@@ -1,19 +1,19 @@
 package com.vvdd7232.elementalstaves.item;
 
-import net.minecraft.client.item.TooltipContext;
-import net.minecraft.entity.projectile.SmallFireballEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.particle.ParticleTypes;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.text.Text;
-import net.minecraft.util.Hand;
-import net.minecraft.util.TypedActionResult;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
-import org.jetbrains.annotations.Nullable;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.SmallFireball;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
 
@@ -27,32 +27,33 @@ public final class FireStaffItem extends BaseStaffItem {
     }
 
     @Override
-    public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
-        ItemStack stack = user.getStackInHand(hand);
-        if (user.getItemCooldownManager().isCoolingDown(this)) {
-            return TypedActionResult.fail(stack);
+    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+        ItemStack stack = player.getItemInHand(hand);
+        if (player.getCooldowns().isOnCooldown(this)) {
+            return InteractionResultHolder.fail(stack);
+        }
+        if (level.isClientSide()) {
+            return InteractionResultHolder.sidedSuccess(stack, true);
+        }
+        if (!(level instanceof ServerLevel serverLevel) || !(player instanceof ServerPlayer serverPlayer)) {
+            return InteractionResultHolder.fail(stack);
         }
 
-        // Projectile entities must only be created by the logical server.
-        if (world.isClient) {
-            return TypedActionResult.success(stack);
-        }
+        Vec3 direction = player.getViewVector(1.0F).normalize();
+        Vec3 origin = player.getEyePosition().add(direction.scale(0.75D));
+        SmallFireball fireball = new SmallFireball(serverLevel, player, direction);
+        fireball.setPos(origin.x, origin.y, origin.z);
+        fireball.setDeltaMovement(direction.scale(1.15D));
+        serverLevel.addFreshEntity(fireball);
 
-        Vec3d direction = user.getRotationVec(1.0F).normalize();
-        Vec3d origin = user.getEyePos().add(direction.multiply(0.75D));
-        SmallFireballEntity fireball = new SmallFireballEntity(world, user, direction.x, direction.y, direction.z);
-        fireball.setPosition(origin.x, origin.y, origin.z);
-        fireball.setVelocity(direction.x, direction.y, direction.z, 1.15F, 0.35F);
-        world.spawnEntity(fireball);
-
-        world.playSound(null, user.getBlockPos(), SoundEvents.ENTITY_BLAZE_SHOOT, SoundCategory.PLAYERS, 0.9F, 0.9F + world.random.nextFloat() * 0.2F);
-        ((ServerWorld) world).spawnParticles(ParticleTypes.FLAME, origin.x, origin.y, origin.z, 10, 0.08D, 0.08D, 0.08D, 0.02D);
-        completeCast(user, stack, hand, COOLDOWN_TICKS, DURABILITY_COST);
-        return TypedActionResult.success(stack, false);
+        serverLevel.playSound(null, player.blockPosition(), SoundEvents.BLAZE_SHOOT, SoundSource.PLAYERS, 0.9F, 0.9F + serverLevel.getRandom().nextFloat() * 0.2F);
+        serverLevel.sendParticles(ParticleTypes.FLAME, origin.x, origin.y, origin.z, 10, 0.08D, 0.08D, 0.08D, 0.02D);
+        completeCast(serverPlayer, stack, hand, COOLDOWN_TICKS, DURABILITY_COST);
+        return InteractionResultHolder.sidedSuccess(stack, false);
     }
 
     @Override
-    public void appendTooltip(ItemStack stack, @Nullable World world, List<Text> tooltip, TooltipContext context) {
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip, net.minecraft.world.item.TooltipFlag tooltipFlag) {
         addDescription(tooltip, "tooltip.elementalstaves.fire_staff.1", "tooltip.elementalstaves.fire_staff.2");
     }
 }

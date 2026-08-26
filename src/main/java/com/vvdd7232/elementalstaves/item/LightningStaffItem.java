@@ -1,23 +1,22 @@
 package com.vvdd7232.elementalstaves.item;
 
-import net.minecraft.client.item.TooltipContext;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LightningEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.particle.ParticleTypes;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.text.Text;
-import net.minecraft.util.Hand;
-import net.minecraft.util.TypedActionResult;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.hit.HitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import org.jetbrains.annotations.Nullable;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LightningBolt;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
 
 import java.util.List;
 
@@ -32,47 +31,43 @@ public final class LightningStaffItem extends BaseStaffItem {
     }
 
     @Override
-    public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
-        ItemStack stack = user.getStackInHand(hand);
-        if (user.getItemCooldownManager().isCoolingDown(this)) {
-            return TypedActionResult.fail(stack);
+    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+        ItemStack stack = player.getItemInHand(hand);
+        if (player.getCooldowns().isOnCooldown(this)) {
+            return InteractionResultHolder.fail(stack);
+        }
+        if (level.isClientSide()) {
+            return InteractionResultHolder.sidedSuccess(stack, true);
+        }
+        if (!(level instanceof ServerLevel serverLevel) || !(player instanceof ServerPlayer serverPlayer)) {
+            return InteractionResultHolder.fail(stack);
         }
 
-        if (world.isClient) {
-            return TypedActionResult.success(stack);
-        }
-
-        HitResult hit = user.raycast(RANGE, 1.0F, false);
+        HitResult hit = player.pick(RANGE, 1.0F, false);
         if (hit.getType() != HitResult.Type.BLOCK) {
-            user.sendMessage(Text.translatable("message.elementalstaves.lightning.no_target"), true);
-            return TypedActionResult.fail(stack);
+            player.displayClientMessage(Component.translatable("message.elementalstaves.lightning.no_target"), true);
+            return InteractionResultHolder.fail(stack);
         }
 
         BlockPos target = ((BlockHitResult) hit).getBlockPos();
-        if (!world.canPlayerModifyAt(user, target)) {
-            user.sendMessage(Text.translatable("message.elementalstaves.common.protected"), true);
-            return TypedActionResult.fail(stack);
+        if (!serverLevel.mayInteract(serverPlayer, target)) {
+            player.displayClientMessage(Component.translatable("message.elementalstaves.common.protected"), true);
+            return InteractionResultHolder.fail(stack);
         }
 
-        LightningEntity lightning = EntityType.LIGHTNING_BOLT.create(world);
-        if (lightning == null) {
-            return TypedActionResult.fail(stack);
-        }
+        LightningBolt lightning = new LightningBolt(EntityType.LIGHTNING_BOLT, serverLevel);
+        lightning.setPos(target.getX() + 0.5D, target.getY(), target.getZ() + 0.5D);
+        lightning.setCause(serverPlayer);
+        serverLevel.addFreshEntity(lightning);
 
-        lightning.setPosition(target.getX() + 0.5D, target.getY(), target.getZ() + 0.5D);
-        if (user instanceof ServerPlayerEntity serverPlayer) {
-            lightning.setChanneler(serverPlayer);
-        }
-        world.spawnEntity(lightning);
-
-        world.playSound(null, target, SoundEvents.ITEM_TRIDENT_THUNDER, SoundCategory.PLAYERS, 0.75F, 1.0F);
-        ((ServerWorld) world).spawnParticles(ParticleTypes.ELECTRIC_SPARK, target.getX() + 0.5D, target.getY() + 1.0D, target.getZ() + 0.5D, 18, 0.35D, 0.35D, 0.35D, 0.12D);
-        completeCast(user, stack, hand, COOLDOWN_TICKS, DURABILITY_COST);
-        return TypedActionResult.success(stack, false);
+        serverLevel.playSound(null, target.getX() + 0.5D, target.getY() + 0.5D, target.getZ() + 0.5D, SoundEvents.TRIDENT_THUNDER, SoundSource.PLAYERS, 0.75F, 1.0F);
+        serverLevel.sendParticles(ParticleTypes.ELECTRIC_SPARK, target.getX() + 0.5D, target.getY() + 1.0D, target.getZ() + 0.5D, 18, 0.35D, 0.35D, 0.35D, 0.12D);
+        completeCast(serverPlayer, stack, hand, COOLDOWN_TICKS, DURABILITY_COST);
+        return InteractionResultHolder.sidedSuccess(stack, false);
     }
 
     @Override
-    public void appendTooltip(ItemStack stack, @Nullable World world, List<Text> tooltip, TooltipContext context) {
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip, net.minecraft.world.item.TooltipFlag tooltipFlag) {
         addDescription(tooltip, "tooltip.elementalstaves.lightning_staff.1", "tooltip.elementalstaves.lightning_staff.2");
     }
 }
