@@ -1,0 +1,8 @@
+{
+  "replace": false,
+  "values": [
+    "elementalstaves:fire_staff",
+    "elementalstaves:lightning_staff",
+    "elementalstaves:earth_staff"
+  ]
+}

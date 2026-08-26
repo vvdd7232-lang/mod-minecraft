@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {"item": "elementalstaves:elemental_block"}
+  ],
+  "result": {"id": "elementalstaves:elemental_ingot", "count": 9}
+}

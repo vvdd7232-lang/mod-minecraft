@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:blasting",
+  "category": "misc",
+  "cookingtime": 100,
+  "experience": 0.7,
+  "group": "elemental_ingot",
+  "ingredient": {
+    "item": "elementalstaves:deepslate_elemental_ore"
+  },
+  "result": {
+    "id": "elementalstaves:elemental_ingot"
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_raw_elemental": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "elementalstaves:raw_elemental"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "elementalstaves:elemental_ingot_from_blasting"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "rewards": {
+    "recipes": [
+      "elementalstaves:elemental_ingot_from_blasting"
+    ]
+  },
+  "requirements": [
+    [
+      "has_raw_elemental",
+      "has_the_recipe"
+    ]
+  ]
+}
