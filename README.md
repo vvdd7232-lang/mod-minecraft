@@ -53,7 +53,7 @@
 ./gradlew build
 ```
 
-Готовый файл появится в `build/libs/elementalstaves-1.1.2.jar`.
+Готовый файл появится в `build/libs/elementalstaves-1.1.3.jar`.
 
 ## Технологии
 
