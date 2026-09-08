@@ -1,0 +1,14 @@
+{
+  "replace": false,
+  "values": [
+    "elementalstaves:elemental_sword",
+    "elementalstaves:elemental_pickaxe",
+    "elementalstaves:elemental_axe",
+    "elementalstaves:elemental_shovel",
+    "elementalstaves:elemental_hoe",
+    "elementalstaves:elemental_helmet",
+    "elementalstaves:elemental_chestplate",
+    "elementalstaves:elemental_leggings",
+    "elementalstaves:elemental_boots"
+  ]
+}

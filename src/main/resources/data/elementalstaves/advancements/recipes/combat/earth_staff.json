@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_moss_block": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [{ "items": ["minecraft:moss_block"] }]
+      }
+    }
+  },
+  "rewards": { "recipes": ["elementalstaves:earth_staff"] }
+}

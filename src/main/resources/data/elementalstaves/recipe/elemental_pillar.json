@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "E",
+    "E"
+  ],
+  "key": {
+    "E": {
+      "item": "elementalstaves:elemental_block"
+    }
+  },
+  "result": {
+    "id": "elementalstaves:elemental_pillar"
+  }
+}

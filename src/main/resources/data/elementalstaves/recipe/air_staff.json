@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "  W",
+    " F ",
+    "S  "
+  ],
+  "key": {
+    "W": {
+      "item": "minecraft:wind_charge"
+    },
+    "F": {
+      "item": "minecraft:feather"
+    },
+    "S": {
+      "item": "minecraft:stick"
+    }
+  },
+  "result": {
+    "id": "elementalstaves:air_staff"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "elementalstaves:elemental_helmet",
+    "elementalstaves:elemental_chestplate",
+    "elementalstaves:elemental_leggings",
+    "elementalstaves:elemental_boots"
+  ]
+}

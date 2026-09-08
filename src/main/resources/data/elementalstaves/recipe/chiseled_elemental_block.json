@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "EE"
+  ],
+  "key": {
+    "E": {
+      "item": "elementalstaves:elemental_block"
+    }
+  },
+  "result": {
+    "id": "elementalstaves:chiseled_elemental_block"
+  }
+}
