@@ -1,6 +1,8 @@
 {
   "replace": false,
   "values": [
-    "elementalstaves:raw_elemental_block"
+    "elementalstaves:raw_elemental_block",
+    "elementalstaves:coal_engine",
+    "elementalstaves:drive_shaft"
   ]
 }

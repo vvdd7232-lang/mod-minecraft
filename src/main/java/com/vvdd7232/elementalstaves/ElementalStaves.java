@@ -1,6 +1,11 @@
 package com.vvdd7232.elementalstaves;
 
 import com.mojang.logging.LogUtils;
+import com.vvdd7232.elementalstaves.mechanical.CoalEngineBlock;
+import com.vvdd7232.elementalstaves.mechanical.CoalEngineBlockEntity;
+import com.vvdd7232.elementalstaves.mechanical.DriveShaftBlock;
+import com.vvdd7232.elementalstaves.mechanical.DriveShaftBlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import com.vvdd7232.elementalstaves.item.AirStaffItem;
 import com.vvdd7232.elementalstaves.item.AquaStaffItem;
 import com.vvdd7232.elementalstaves.item.EarthStaffItem;
@@ -48,6 +53,20 @@ public final class ElementalStaves {
     public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(MOD_ID);
     public static final DeferredRegister<ArmorMaterial> ARMOR_MATERIALS =
             DeferredRegister.create(Registries.ARMOR_MATERIAL, MOD_ID);
+
+    public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES =
+            DeferredRegister.create(Registries.BLOCK_ENTITY_TYPE, MOD_ID);
+    public static final DeferredBlock<CoalEngineBlock> COAL_ENGINE = BLOCKS.register("coal_engine",
+            () -> new CoalEngineBlock(copiedMineableProperties(Blocks.IRON_BLOCK)
+                    .lightLevel(state -> state.getValue(CoalEngineBlock.LIT) ? 8 : 0)));
+    public static final DeferredBlock<DriveShaftBlock> DRIVE_SHAFT = BLOCKS.register("drive_shaft",
+            () -> new DriveShaftBlock(copiedMineableProperties(Blocks.IRON_BLOCK).noOcclusion()));
+    public static final DeferredItem<BlockItem> COAL_ENGINE_ITEM = ITEMS.registerSimpleBlockItem(COAL_ENGINE);
+    public static final DeferredItem<BlockItem> DRIVE_SHAFT_ITEM = ITEMS.registerSimpleBlockItem(DRIVE_SHAFT);
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<CoalEngineBlockEntity>> COAL_ENGINE_ENTITY =
+            BLOCK_ENTITIES.register("coal_engine", () -> BlockEntityType.Builder.of(CoalEngineBlockEntity::new, COAL_ENGINE.get()).build(null));
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<DriveShaftBlockEntity>> DRIVE_SHAFT_ENTITY =
+            BLOCK_ENTITIES.register("drive_shaft", () -> BlockEntityType.Builder.of(DriveShaftBlockEntity::new, DRIVE_SHAFT.get()).build(null));
 
     // Natural and storage blocks. The ore requires at least an iron pickaxe to drop its resource.
     public static final DeferredBlock<Block> ELEMENTAL_ORE = BLOCKS.registerSimpleBlock(
@@ -163,8 +182,9 @@ public final class ElementalStaves {
         ARMOR_MATERIALS.register(modEventBus);
         BLOCKS.register(modEventBus);
         ITEMS.register(modEventBus);
+        BLOCK_ENTITIES.register(modEventBus);
         modEventBus.addListener(this::addCreativeItems);
-        LOGGER.info("Elemental Staves loaded: elemental staves, Elemental Steel ore, tools, armor and v1.3 building blocks.");
+        LOGGER.info("Elemental Staves loaded: elemental staves, Elemental Steel ore, tools, armor and coal engines and mechanical shafts.");
     }
 
     /**
@@ -199,6 +219,9 @@ public final class ElementalStaves {
             event.accept(ELEMENTAL_AXE);
             event.accept(ELEMENTAL_SHOVEL);
             event.accept(ELEMENTAL_HOE);
+        } else if (event.getTabKey() == CreativeModeTabs.REDSTONE_BLOCKS) {
+            event.accept(COAL_ENGINE_ITEM);
+            event.accept(DRIVE_SHAFT_ITEM);
         } else if (event.getTabKey() == CreativeModeTabs.COMBAT) {
             event.accept(ELEMENTAL_SWORD);
             event.accept(ELEMENTAL_HELMET);

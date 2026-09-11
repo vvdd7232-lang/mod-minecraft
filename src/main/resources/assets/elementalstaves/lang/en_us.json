@@ -49,5 +49,12 @@
   "message.elementalstaves.aqua.no_effect": "§eThere is no fire nearby and no place to pour water.",
   "message.elementalstaves.air.no_target": "§eThe Air Staff gust hit no one.",
   "message.elementalstaves.life.healthy": "§eNothing to heal: full health and no harmful effects.",
-  "message.elementalstaves.spell.no_effect": "No valid target or effect."
+  "message.elementalstaves.spell.no_effect": "No valid target or effect.",
+  "block.elementalstaves.coal_engine": "Coal Engine",
+  "block.elementalstaves.drive_shaft": "Drive Shaft",
+  "message.elementalstaves.engine.full": "Fuel slot is full or contains a different coal type.",
+  "message.elementalstaves.engine.status": "Fuel: %s | Burn remaining: %s s | %s",
+  "message.elementalstaves.engine.paused": "Paused by redstone",
+  "message.elementalstaves.engine.running": "Running: 40 RPM",
+  "message.elementalstaves.engine.idle": "Waiting for fuel"
 }

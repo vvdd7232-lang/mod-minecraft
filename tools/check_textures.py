@@ -6,16 +6,17 @@ from PIL import Image
 ROOT = Path(__file__).resolve().parents[1]
 ASSETS = ROOT / 'src/main/resources/assets/elementalstaves'
 paths = list((ASSETS / 'textures').rglob('*.png'))
-assert len(paths) == 28, f'Unexpected texture count: {len(paths)}'
+assert len(paths) == 35, f'Unexpected texture count: {len(paths)}'
 for path in paths:
     with Image.open(path) as im:
         armor = 'armor' in path.parts
-        assert im.size == ((64, 32) if armor else (16, 16)), path
+        entity = 'entity' in path.parts
+        assert im.size == ((64, 32) if armor or entity else (16, 16)), path
         assert im.mode == 'RGBA', path
         alpha = set(im.getchannel('A').tobytes())
         assert alpha <= {0, 255}, f'Soft/blurred alpha: {path}'
         assert 255 in alpha, f'Empty texture: {path}'
-        if 'block' in path.parts:
+        if 'block' in path.parts or entity:
             assert alpha == {255}, f'Holes in block texture: {path}'
         else:
             assert 0 in alpha, f'Missing transparent background: {path}'

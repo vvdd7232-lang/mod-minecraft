@@ -8,6 +8,8 @@
     "elementalstaves:elemental_lamp",
     "elementalstaves:elemental_pillar",
     "elementalstaves:chiseled_elemental_block",
-    "elementalstaves:charged_elemental_block"
+    "elementalstaves:charged_elemental_block",
+    "elementalstaves:coal_engine",
+    "elementalstaves:drive_shaft"
   ]
 }

@@ -1,0 +1,15 @@
+{
+  "variants": {
+    "axis=z": {
+      "model": "elementalstaves:block/drive_shaft"
+    },
+    "axis=x": {
+      "model": "elementalstaves:block/drive_shaft",
+      "y": 90
+    },
+    "axis=y": {
+      "model": "elementalstaves:block/drive_shaft",
+      "x": 90
+    }
+  }
+}

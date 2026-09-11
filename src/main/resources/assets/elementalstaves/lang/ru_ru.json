@@ -49,5 +49,12 @@
   "message.elementalstaves.aqua.no_effect": "§eРядом нет огня, и некуда поставить воду.",
   "message.elementalstaves.air.no_target": "§eПорыв посоха ветра никого не задел.",
   "message.elementalstaves.life.healthy": "§eНекого лечить: здоровье полное и вредных эффектов нет.",
-  "message.elementalstaves.spell.no_effect": "Нет подходящей цели или эффекта."
+  "message.elementalstaves.spell.no_effect": "Нет подходящей цели или эффекта.",
+  "block.elementalstaves.coal_engine": "Угольный двигатель",
+  "block.elementalstaves.drive_shaft": "Приводной вал",
+  "message.elementalstaves.engine.full": "Топливный слот заполнен или занят другим видом угля.",
+  "message.elementalstaves.engine.status": "Топливо: %s | Осталось горения: %s с | %s",
+  "message.elementalstaves.engine.paused": "Пауза: сигнал редстоуна",
+  "message.elementalstaves.engine.running": "Работает: 40 об/мин",
+  "message.elementalstaves.engine.idle": "Ожидание топлива"
 }
