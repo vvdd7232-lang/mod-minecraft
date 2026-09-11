@@ -4,6 +4,23 @@
 
 ![Иконка посохов](src/main/resources/assets/elementalstaves/icon.png)
 
+## Обновление текстур — 1.3.1
+
+Все 28 игровых текстур перерисованы в едином ванильном стиле: блоки и предметы
+16×16, надетая броня — стандартные развёртки 64×32. Сталь получила сине-зелёную
+палитру, инструменты — узнаваемые силуэты, посохи — разные навершия и цвета стихий.
+Механики и рецепты в этом обновлении не менялись.
+
+![Обзор новых текстур](docs/texture-preview.png)
+
+Для воспроизведения текстур нужен Python 3.9+ и Pillow:
+
+```bash
+python -m pip install -r tools/requirements.txt
+python tools/update_textures.py
+python tools/check_textures.py
+```
+
 ## Возможности
 
 ### Посохи
@@ -103,7 +120,7 @@
 ./gradlew build
 ```
 
-Готовый файл появится в `build/libs/elementalstaves-1.3.0.jar`.
+Готовый файл появится в `build/libs/elementalstaves-1.3.1.jar`.
 
 ## Технологии
 
