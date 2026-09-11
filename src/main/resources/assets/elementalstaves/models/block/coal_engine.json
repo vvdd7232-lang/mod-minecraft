@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "particle": "elementalstaves:block/engine_side",
+    "north": "elementalstaves:block/engine_front",
+    "south": "elementalstaves:block/engine_back",
+    "east": "elementalstaves:block/engine_side",
+    "west": "elementalstaves:block/engine_side",
+    "up": "elementalstaves:block/engine_top",
+    "down": "elementalstaves:block/engine_side"
+  }
+}

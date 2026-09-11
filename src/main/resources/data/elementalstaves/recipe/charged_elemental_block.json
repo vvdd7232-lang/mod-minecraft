@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "III",
+    "IBI",
+    "III"
+  ],
+  "key": {
+    "I": {
+      "item": "elementalstaves:elemental_ingot"
+    },
+    "B": {
+      "item": "elementalstaves:elemental_block"
+    }
+  },
+  "result": {
+    "id": "elementalstaves:charged_elemental_block"
+  }
+}

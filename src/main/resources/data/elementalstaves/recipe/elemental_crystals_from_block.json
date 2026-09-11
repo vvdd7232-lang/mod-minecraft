@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "elementalstaves:raw_elemental_block"
+    }
+  ],
+  "result": {
+    "id": "elementalstaves:raw_elemental",
+    "count": 9
+  }
+}

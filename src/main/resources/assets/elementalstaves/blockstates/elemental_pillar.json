@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "axis=y": {
+      "model": "elementalstaves:block/elemental_pillar"
+    },
+    "axis=z": {
+      "model": "elementalstaves:block/elemental_pillar",
+      "x": 90
+    },
+    "axis=x": {
+      "model": "elementalstaves:block/elemental_pillar",
+      "x": 90,
+      "y": 90
+    }
+  }
+}

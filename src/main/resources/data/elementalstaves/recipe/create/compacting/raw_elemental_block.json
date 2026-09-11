@@ -1,0 +1,43 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "create"
+    }
+  ],
+  "type": "create:compacting",
+  "ingredients": [
+    {
+      "item": "elementalstaves:raw_elemental"
+    },
+    {
+      "item": "elementalstaves:raw_elemental"
+    },
+    {
+      "item": "elementalstaves:raw_elemental"
+    },
+    {
+      "item": "elementalstaves:raw_elemental"
+    },
+    {
+      "item": "elementalstaves:raw_elemental"
+    },
+    {
+      "item": "elementalstaves:raw_elemental"
+    },
+    {
+      "item": "elementalstaves:raw_elemental"
+    },
+    {
+      "item": "elementalstaves:raw_elemental"
+    },
+    {
+      "item": "elementalstaves:raw_elemental"
+    }
+  ],
+  "results": [
+    {
+      "id": "elementalstaves:raw_elemental_block"
+    }
+  ]
+}

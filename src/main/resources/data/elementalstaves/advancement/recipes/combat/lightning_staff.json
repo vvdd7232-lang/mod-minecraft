@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_lightning_rod": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [{ "items": ["minecraft:lightning_rod"] }]
+      }
+    }
+  },
+  "rewards": { "recipes": ["elementalstaves:lightning_staff"] }
+}

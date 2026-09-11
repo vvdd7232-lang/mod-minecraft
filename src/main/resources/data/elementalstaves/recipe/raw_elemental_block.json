@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "RRR",
+    "RRR",
+    "RRR"
+  ],
+  "key": {
+    "R": {
+      "item": "elementalstaves:raw_elemental"
+    }
+  },
+  "result": {
+    "id": "elementalstaves:raw_elemental_block"
+  }
+}

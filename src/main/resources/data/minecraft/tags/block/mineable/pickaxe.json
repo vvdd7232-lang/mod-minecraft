@@ -1,0 +1,15 @@
+{
+  "replace": false,
+  "values": [
+    "elementalstaves:elemental_ore",
+    "elementalstaves:deepslate_elemental_ore",
+    "elementalstaves:elemental_block",
+    "elementalstaves:raw_elemental_block",
+    "elementalstaves:elemental_lamp",
+    "elementalstaves:elemental_pillar",
+    "elementalstaves:chiseled_elemental_block",
+    "elementalstaves:charged_elemental_block",
+    "elementalstaves:coal_engine",
+    "elementalstaves:drive_shaft"
+  ]
+}
