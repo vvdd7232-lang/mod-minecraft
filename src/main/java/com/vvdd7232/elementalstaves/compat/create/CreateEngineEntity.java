@@ -24,7 +24,7 @@ public final class CreateEngineEntity extends GeneratingKineticBlockEntity imple
     }
     @Override public void tick() {
         super.tick();
-        if (level == null || level.isClientSide || isVirtual()) return;
+        if (level == null || level.isClientSide || isVirtual() || isRemoved()) return;
         boolean running = fuel.tick(level.hasNeighborSignal(worldPosition));
         if (running) setChanged();
         BlockState state = getBlockState();

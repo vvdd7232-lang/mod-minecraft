@@ -22,10 +22,28 @@ public final class MechanicalGameTests {
         h.setBlock(shaft, ElementalStaves.DRIVE_SHAFT.get().defaultBlockState().setValue(DriveShaftBlock.AXIS, Direction.Axis.X));
         h.setBlock(tail, ElementalStaves.DRIVE_SHAFT.get().defaultBlockState().setValue(DriveShaftBlock.AXIS, Direction.Axis.X));
         EngineAccess access = (EngineAccess) h.getBlockEntity(engine);
-        access.engineFuel().insert(false, 2);
+        var inventory = h.getLevel().getCapability(net.neoforged.neoforge.capabilities.Capabilities.ItemHandler.BLOCK,
+                h.absolutePos(engine), Direction.UP);
+        h.assertTrue(inventory != null, "Fuel capability not registered");
+        var coal = new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.COAL, 2);
+        h.assertTrue(inventory.insertItem(0, coal, true).isEmpty(), "Simulated insertion rejected");
+        h.assertTrue(access.engineFuel().queued() == 0, "Simulation mutated fuel");
+        inventory.insertItem(0, coal, false);
+        for (String recipe : new String[]{"crushing/elemental_ore", "crushing/deepslate_elemental_ore",
+                "compacting/elemental_block", "compacting/raw_elemental_block", "mixing/elemental_ingot",
+                "cutting/drive_shaft", "to_create_shaft", "from_create_shaft"}) {
+            boolean present = h.getLevel().getRecipeManager().byKey(net.minecraft.resources.ResourceLocation
+                    .fromNamespaceAndPath(ElementalStaves.MOD_ID, "create/" + recipe)).isPresent();
+            h.assertTrue(present == create, "Wrong conditional recipe state: " + recipe);
+        }
         h.runAfterDelay(30, () -> {
             assertRotation(h, tail, true);
             h.assertTrue(access.engineFuel().queued() == 1, "Must consume exactly one coal at ignition");
+            inventory.extractItem(0, 64, true);
+            h.assertTrue(access.engineFuel().queued() == 1, "Simulated extraction mutated fuel");
+            var saved = h.getBlockEntity(engine).saveWithFullMetadata(h.getLevel().registryAccess());
+            h.assertTrue(saved.getInt("Fuel") == 1 && saved.getInt("BurnTicks") == access.engineFuel().remaining(),
+                    "Fuel NBT format differs between backends");
             h.setBlock(new BlockPos(1,1,2), Blocks.REDSTONE_BLOCK);
         });
         h.runAfterDelay(55, () -> {

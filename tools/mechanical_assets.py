@@ -85,7 +85,7 @@ for locale,values in {
  'block.elementalstaves.coal_engine':'Угольный двигатель','block.elementalstaves.drive_shaft':'Приводной вал',
 'message.elementalstaves.engine.full':'Топливный слот заполнен или занят другим видом угля.',
 'message.elementalstaves.engine.status':'Топливо: %s | Осталось горения: %s с | %s',
-'message.elementalstaves.engine.paused':'Пауза: сигнал редстоуна','message.elementalstaves.engine.running':'Работает: 40 об/мин','message.elementalstaves.engine.idle':'Ожидание топлива'},
+'message.elementalstaves.engine.paused':'Пауза: сигнал редстоуна','message.elementalstaves.engine.running':'Горение активно','message.elementalstaves.engine.idle':'Ожидание топлива'},
 'en_us':{'tooltip.elementalstaves.coal_engine.1':'Use coal: +1; sneak-use: insert stack. 40 RPM.',
  'tooltip.elementalstaves.coal_engine.2':'Redstone pauses. Sneak-use empty hand: retrieve queued fuel.',
  'tooltip.elementalstaves.drive_shaft.1':'Connect straight to the engine flywheel. Up to 32 shafts.',
@@ -93,7 +93,7 @@ for locale,values in {
  'block.elementalstaves.coal_engine':'Coal Engine','block.elementalstaves.drive_shaft':'Drive Shaft',
 'message.elementalstaves.engine.full':'Fuel slot is full or contains a different coal type.',
 'message.elementalstaves.engine.status':'Fuel: %s | Burn remaining: %s s | %s',
-'message.elementalstaves.engine.paused':'Paused by redstone','message.elementalstaves.engine.running':'Running: 40 RPM','message.elementalstaves.engine.idle':'Waiting for fuel'}
+'message.elementalstaves.engine.paused':'Paused by redstone','message.elementalstaves.engine.running':'Combustion active','message.elementalstaves.engine.idle':'Waiting for fuel'}
 }.items():
     p=A/f'lang/{locale}.json';data=json.loads(p.read_text());data.update(values);write(p,data)
 print('Mechanical textures, models, states, recipes, loot, tags and translations written')
