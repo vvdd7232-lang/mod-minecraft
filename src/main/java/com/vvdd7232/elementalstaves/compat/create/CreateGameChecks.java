@@ -28,18 +28,19 @@ public final class CreateGameChecks {
         h.setBlock(turn, ElementalStaves.DRIVE_SHAFT.get().defaultBlockState().setValue(DriveShaftBlock.AXIS, Direction.Axis.Z));
         ((EngineAccess)h.getBlockEntity(engine)).engineFuel().insert(false, 2);
         double normalImpact = BlockStressValues.getImpact(AllBlocks.MECHANICAL_PRESS.get());
+        java.util.concurrent.atomic.AtomicReference<Double> testImpact = new java.util.concurrent.atomic.AtomicReference<>(100.0);
         h.runAfterDelay(40, () -> {
             assertSpeed(h, shaft, 40); assertSpeed(h, turn, 40);
             h.assertTrue(((CreateEngineEntity)h.getBlockEntity(engine)).calculateAddedStressCapacity() == 64, "Wrong engine capacity");
             // Simulate a configured high-impact machine using Create's public stress registry.
-            BlockStressValues.IMPACTS.register(AllBlocks.MECHANICAL_PRESS.get(), () -> 100.0);
+            BlockStressValues.IMPACTS.register(AllBlocks.MECHANICAL_PRESS.get(), () -> testImpact.get());
             h.setBlock(press, AllBlocks.MECHANICAL_PRESS.getDefaultState().setValue(BlockStateProperties.HORIZONTAL_FACING, Direction.SOUTH));
         });
         h.runAfterDelay(80, () -> {
             assertSpeed(h, turn, 0);
             h.assertTrue(((KineticBlockEntity)h.getBlockEntity(engine)).isOverStressed(), "Overload must stop network");
             h.setBlock(press, Blocks.AIR);
-            BlockStressValues.IMPACTS.register(AllBlocks.MECHANICAL_PRESS.get(), () -> normalImpact);
+            testImpact.set(normalImpact);
         });
         h.runAfterDelay(120, () -> {
             assertSpeed(h, turn, 40);
