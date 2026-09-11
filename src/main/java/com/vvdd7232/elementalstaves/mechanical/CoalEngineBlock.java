@@ -48,7 +48,7 @@ public final class CoalEngineBlock extends BaseEntityBlock {
     @Override protected RenderShape getRenderShape(BlockState s) { return RenderShape.MODEL; }
     @Override public BlockEntity newBlockEntity(BlockPos p, BlockState s) { return new CoalEngineBlockEntity(p, s); }
     @Override public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level l, BlockState s, BlockEntityType<T> t) {
-        return createTickerHelper(t, ElementalStaves.COAL_ENGINE_ENTITY.get(), CoalEngineBlockEntity::tick);
+        return createTickerHelper(t, MechanicalPlatform.<CoalEngineBlockEntity>engineType(), CoalEngineBlockEntity::tick);
     }
 
     private boolean canUse(Level level, BlockPos pos, Player player) {
@@ -60,18 +60,18 @@ public final class CoalEngineBlock extends BaseEntityBlock {
         if (stack.isEmpty()) return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         if (!stack.is(Items.COAL) && !stack.is(Items.CHARCOAL)) return ItemInteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION;
         if (!canUse(level, pos, player)) return ItemInteractionResult.FAIL;
-        if (!level.isClientSide && level.getBlockEntity(pos) instanceof CoalEngineBlockEntity engine) engine.insert(player, stack);
+        if (!level.isClientSide && level.getBlockEntity(pos) instanceof EngineAccess engine) engine.insert(player, stack);
         return ItemInteractionResult.sidedSuccess(level.isClientSide);
     }
 
     @Override protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
         if (!canUse(level, pos, player)) return InteractionResult.FAIL;
-        if (!level.isClientSide && level.getBlockEntity(pos) instanceof CoalEngineBlockEntity engine) engine.interactEmpty(player);
+        if (!level.isClientSide && level.getBlockEntity(pos) instanceof EngineAccess engine) engine.interactEmpty(player);
         return InteractionResult.sidedSuccess(level.isClientSide);
     }
 
     @Override protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState next, boolean moving) {
-        if (!state.is(next.getBlock()) && level.getBlockEntity(pos) instanceof CoalEngineBlockEntity engine) engine.dropFuel();
+        if (!state.is(next.getBlock()) && level.getBlockEntity(pos) instanceof EngineAccess engine) engine.dropFuel();
         super.onRemove(state, level, pos, next, moving);
     }
 

@@ -14,51 +14,13 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
 /** One coal/charcoal slot, no menu. Burn progress pauses under a redstone signal. */
-public final class CoalEngineBlockEntity extends RotatingBlockEntity {
+public final class CoalEngineBlockEntity extends RotatingBlockEntity implements EngineAccess {
     private final EngineFuel fuel = new EngineFuel();
     private long lastServerTick = -1;
 
     public CoalEngineBlockEntity(BlockPos p, BlockState s) { super(ElementalStaves.COAL_ENGINE_ENTITY.get(), p, s); }
 
-    public boolean insert(Player player, ItemStack stack) {
-        if (!stack.is(Items.COAL) && !stack.is(Items.CHARCOAL)) return false;
-        boolean isCharcoal = stack.is(Items.CHARCOAL);
-        int count = fuel.insert(isCharcoal, player.isShiftKeyDown() ? stack.getCount() : 1);
-        if (count == 0) {
-            player.displayClientMessage(Component.translatable("message.elementalstaves.engine.full"), true);
-            return false;
-        }
-        if (!player.getAbilities().instabuild) stack.shrink(count);
-        setChanged();
-        status(player);
-        return true;
-    }
-
-    public void interactEmpty(Player player) {
-        if (player.isShiftKeyDown() && fuel.queued() > 0) {
-            ItemStack extracted = new ItemStack(fuel.charcoal() ? Items.CHARCOAL : Items.COAL, fuel.queued());
-            fuel.extract();
-            setChanged();
-            player.getInventory().placeItemBackInInventory(extracted);
-        }
-        status(player);
-    }
-
-    private void status(Player player) {
-        boolean stopped = level != null && level.hasNeighborSignal(worldPosition);
-        player.displayClientMessage(Component.translatable("message.elementalstaves.engine.status",
-                fuel.queued(), (fuel.remaining() + 19) / 20, Component.translatable(stopped
-                        ? "message.elementalstaves.engine.paused" : fuel.remaining() > 0
-                        ? "message.elementalstaves.engine.running" : "message.elementalstaves.engine.idle")), true);
-    }
-
-    public void dropFuel() {
-        if (level != null && !level.isClientSide && fuel.queued() > 0) {
-            Containers.dropItemStack(level, worldPosition.getX() + 0.5, worldPosition.getY() + 0.5,
-                    worldPosition.getZ() + 0.5, new ItemStack(fuel.charcoal() ? Items.CHARCOAL : Items.COAL, fuel.queued()));
-            fuel.extract();
-        }
-    }
+    @Override public EngineFuel engineFuel() { return fuel; }
 
     public static void tick(Level level, BlockPos pos, BlockState state, CoalEngineBlockEntity entity) {
         if (level.isClientSide) { entity.animate(level, state.getValue(CoalEngineBlock.LIT)); return; }

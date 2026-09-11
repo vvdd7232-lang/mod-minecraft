@@ -1,6 +1,7 @@
 package com.vvdd7232.elementalstaves;
 
 import com.mojang.logging.LogUtils;
+import com.vvdd7232.elementalstaves.mechanical.MechanicalPlatform;
 import com.vvdd7232.elementalstaves.item.MechanicalBlockItem;
 import com.vvdd7232.elementalstaves.mechanical.CoalEngineBlock;
 import com.vvdd7232.elementalstaves.mechanical.CoalEngineBlockEntity;
@@ -57,19 +58,19 @@ public final class ElementalStaves {
 
     public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES =
             DeferredRegister.create(Registries.BLOCK_ENTITY_TYPE, MOD_ID);
-    public static final DeferredBlock<CoalEngineBlock> COAL_ENGINE = BLOCKS.register("coal_engine",
-            () -> new CoalEngineBlock(copiedMineableProperties(Blocks.IRON_BLOCK)
+    public static final DeferredBlock<Block> COAL_ENGINE = BLOCKS.register("coal_engine",
+            () -> MechanicalPlatform.engine(copiedMineableProperties(Blocks.IRON_BLOCK)
                     .lightLevel(state -> state.getValue(CoalEngineBlock.LIT) ? 8 : 0)));
-    public static final DeferredBlock<DriveShaftBlock> DRIVE_SHAFT = BLOCKS.register("drive_shaft",
-            () -> new DriveShaftBlock(copiedMineableProperties(Blocks.IRON_BLOCK).noOcclusion()));
+    public static final DeferredBlock<Block> DRIVE_SHAFT = BLOCKS.register("drive_shaft",
+            () -> MechanicalPlatform.shaft(copiedMineableProperties(Blocks.IRON_BLOCK).noOcclusion()));
     public static final DeferredItem<BlockItem> COAL_ENGINE_ITEM = ITEMS.register("coal_engine",
             () -> new MechanicalBlockItem(COAL_ENGINE.get(), new Item.Properties(), "coal_engine"));
     public static final DeferredItem<BlockItem> DRIVE_SHAFT_ITEM = ITEMS.register("drive_shaft",
             () -> new MechanicalBlockItem(DRIVE_SHAFT.get(), new Item.Properties(), "drive_shaft"));
-    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<CoalEngineBlockEntity>> COAL_ENGINE_ENTITY =
-            BLOCK_ENTITIES.register("coal_engine", () -> BlockEntityType.Builder.of(CoalEngineBlockEntity::new, COAL_ENGINE.get()).build(null));
-    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<DriveShaftBlockEntity>> DRIVE_SHAFT_ENTITY =
-            BLOCK_ENTITIES.register("drive_shaft", () -> BlockEntityType.Builder.of(DriveShaftBlockEntity::new, DRIVE_SHAFT.get()).build(null));
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> COAL_ENGINE_ENTITY =
+            BLOCK_ENTITIES.register("coal_engine", MechanicalPlatform::buildEngineType);
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> DRIVE_SHAFT_ENTITY =
+            BLOCK_ENTITIES.register("drive_shaft", MechanicalPlatform::buildShaftType);
 
     // Natural and storage blocks. The ore requires at least an iron pickaxe to drop its resource.
     public static final DeferredBlock<Block> ELEMENTAL_ORE = BLOCKS.registerSimpleBlock(
@@ -186,6 +187,7 @@ public final class ElementalStaves {
         BLOCKS.register(modEventBus);
         ITEMS.register(modEventBus);
         BLOCK_ENTITIES.register(modEventBus);
+        MechanicalPlatform.init(modEventBus);
         modEventBus.addListener(this::addCreativeItems);
         LOGGER.info("Elemental Staves loaded: elemental staves, Elemental Steel ore, tools, armor and coal engines and mechanical shafts.");
     }

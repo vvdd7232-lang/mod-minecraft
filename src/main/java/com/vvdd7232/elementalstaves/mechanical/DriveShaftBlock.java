@@ -53,6 +53,6 @@ public final class DriveShaftBlock extends BaseEntityBlock {
     @Override protected BlockState mirror(BlockState s, Mirror m) { return s; }
     @Override public BlockEntity newBlockEntity(BlockPos p, BlockState s) { return new DriveShaftBlockEntity(p, s); }
     @Override public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level l, BlockState s, BlockEntityType<T> t) {
-        return createTickerHelper(t, ElementalStaves.DRIVE_SHAFT_ENTITY.get(), DriveShaftBlockEntity::tick);
+        return createTickerHelper(t, MechanicalPlatform.<DriveShaftBlockEntity>shaftType(), DriveShaftBlockEntity::tick);
     }
 }

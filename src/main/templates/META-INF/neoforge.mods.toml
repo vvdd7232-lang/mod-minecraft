@@ -24,3 +24,11 @@ type="required"
 versionRange="${minecraft_version_range}"
 ordering="NONE"
 side="BOTH"
+
+# Optional, but a deliberately bounded API target when installed.
+[[dependencies.${mod_id}]]
+modId="create"
+type="optional"
+versionRange="[6.0.10,6.0.11)"
+ordering="AFTER"
+side="BOTH"

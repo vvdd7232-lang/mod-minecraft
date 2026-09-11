@@ -1,6 +1,9 @@
 package com.vvdd7232.elementalstaves.client;
 
 import com.vvdd7232.elementalstaves.ElementalStaves;
+import com.vvdd7232.elementalstaves.mechanical.MechanicalPlatform;
+import com.vvdd7232.elementalstaves.mechanical.CoalEngineBlockEntity;
+import com.vvdd7232.elementalstaves.mechanical.DriveShaftBlockEntity;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -14,7 +17,11 @@ public final class MechanicalClient {
         event.registerLayerDefinition(MechanicalRenderer.LAYER, MechanicalRenderer::layer);
     }
     @SubscribeEvent public static void renderers(EntityRenderersEvent.RegisterRenderers event) {
-        event.registerBlockEntityRenderer(ElementalStaves.COAL_ENGINE_ENTITY.get(), MechanicalRenderer::new);
-        event.registerBlockEntityRenderer(ElementalStaves.DRIVE_SHAFT_ENTITY.get(), MechanicalRenderer::new);
+        if (MechanicalPlatform.hasCreate()) {
+            com.vvdd7232.elementalstaves.compat.create.CreateMechanicalRenderer.register(event);
+        } else {
+            event.registerBlockEntityRenderer(MechanicalPlatform.<CoalEngineBlockEntity>engineType(), MechanicalRenderer::new);
+            event.registerBlockEntityRenderer(MechanicalPlatform.<DriveShaftBlockEntity>shaftType(), MechanicalRenderer::new);
+        }
     }
 }

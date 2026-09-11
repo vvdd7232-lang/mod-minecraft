@@ -48,11 +48,16 @@ public final class MechanicalRenderer<T extends RotatingBlockEntity> implements 
     }
 
     @Override public void render(T entity, float partialTick, PoseStack pose, MultiBufferSource buffers, int light, int overlay) {
-        pose.pushPose();
-        pose.translate(0.5, 0.5, 0.5);
         boolean engine = entity instanceof CoalEngineBlockEntity;
         Direction facing = engine ? entity.getBlockState().getValue(CoalEngineBlock.FACING)
                 : Direction.fromAxisAndDirection(entity.getBlockState().getValue(DriveShaftBlock.AXIS), Direction.AxisDirection.POSITIVE);
+        renderRotor(facing, engine, entity.angle(partialTick), pose, buffers, light, overlay);
+    }
+
+    public void renderRotor(Direction facing, boolean engine, float angle, PoseStack pose,
+                            MultiBufferSource buffers, int light, int overlay) {
+        pose.pushPose();
+        pose.translate(0.5, 0.5, 0.5);
         switch (facing) {
             case NORTH -> pose.mulPose(Axis.YP.rotationDegrees(180));
             case EAST -> pose.mulPose(Axis.YP.rotationDegrees(90));
@@ -62,7 +67,7 @@ public final class MechanicalRenderer<T extends RotatingBlockEntity> implements 
             default -> { }
         }
         float sign = facing.getAxisDirection() == Direction.AxisDirection.POSITIVE ? 1 : -1;
-        pose.mulPose(Axis.ZP.rotationDegrees(entity.angle(partialTick) * sign));
+        pose.mulPose(Axis.ZP.rotationDegrees(angle * sign));
         (engine ? wheel : shaft).render(pose, buffers.getBuffer(RenderType.entityCutoutNoCull(TEXTURE)), light, overlay);
         pose.popPose();
     }
