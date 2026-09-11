@@ -16,7 +16,13 @@ public final class MechanicalBlockItem extends BlockItem {
     }
     @Override public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> lines, TooltipFlag flag) {
         super.appendHoverText(stack, context, lines, flag);
-        lines.add(Component.translatable(tooltip + ".1").withStyle(ChatFormatting.GRAY));
-        lines.add(Component.translatable(tooltip + ".2").withStyle(ChatFormatting.DARK_GRAY));
+        if (com.vvdd7232.elementalstaves.mechanical.MechanicalPlatform.hasCreate()) {
+            lines.add(Component.translatable("tooltip.elementalstaves.create.mode").withStyle(ChatFormatting.GRAY));
+            lines.add(Component.translatable(tooltip.endsWith("coal_engine")
+                    ? "tooltip.elementalstaves.create.capacity" : "tooltip.elementalstaves.create.shaft").withStyle(ChatFormatting.DARK_GRAY));
+        } else {
+            lines.add(Component.translatable(tooltip + ".1").withStyle(ChatFormatting.GRAY));
+            lines.add(Component.translatable(tooltip + ".2").withStyle(ChatFormatting.DARK_GRAY));
+        }
     }
 }

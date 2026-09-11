@@ -16,8 +16,11 @@ public final class EngineFuel {
         return accepted;
     }
     public int extract() {
-        int result = queued;
-        queued = 0;
+        return extract(queued);
+    }
+    public int extract(int requested) {
+        int result = Math.clamp(requested, 0, queued);
+        queued -= result;
         return result;
     }
     public boolean tick(boolean paused) {

@@ -144,6 +144,12 @@ dependencies {
 
 }
 
+// A distinct runtime source set is needed for mod discovery (not only legacy libraries).
+sourceSets { createRuntime }
+configurations.createRuntimeRuntimeClasspath.extendsFrom(configurations.runtimeClasspath)
+sourceSets.createRuntime.runtimeClasspath += sourceSets.main.output
+dependencies { createRuntimeRuntimeOnly 'maven.modrinth:create:UjX6dr61' }
+
 // Separate real server launches prove that the optional class-loading boundary works.
 neoForge.runs {
     verifyStandalone {
@@ -152,19 +158,21 @@ neoForge.runs {
         systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
         systemProperty 'elementalstaves.testCreate', 'false'
         jvmArgument '-Xmx2G'
+        logLevel = org.slf4j.event.Level.INFO
     }
     verifyCreate {
         type = 'gameTestServer'
+        sourceSet = sourceSets.createRuntime
         gameDirectory = layout.buildDirectory.dir('gametest/create')
         systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
         systemProperty 'elementalstaves.testCreate', 'true'
         jvmArgument '-Xmx2G'
+        logLevel = org.slf4j.event.Level.INFO
     }
 }
-dependencies.add(neoForge.runs.verifyCreate.additionalRuntimeClasspathConfiguration.name, 'maven.modrinth:create:UjX6dr61')
 if (providers.gradleProperty('withCreate').map { it.toBoolean() }.getOrElse(false)) {
     [neoForge.runs.client, neoForge.runs.server, neoForge.runs.gameTestServer].each { run ->
-        dependencies.add(run.additionalRuntimeClasspathConfiguration.name, 'maven.modrinth:create:UjX6dr61')
+        run.sourceSet = sourceSets.createRuntime
     }
 }
 tasks.named('runVerifyCreate').configure { mustRunAfter 'runVerifyStandalone' }

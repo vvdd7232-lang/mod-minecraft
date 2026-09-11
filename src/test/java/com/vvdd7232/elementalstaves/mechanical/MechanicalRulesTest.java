@@ -77,4 +77,15 @@ class MechanicalRulesTest {
         assertFalse(DriveLine.powered(d -> { queries.incrementAndGet(); return DriveLine.Node.SHAFT; }));
         assertEquals(32, queries.get());
     }
+    @Test void automatedExtractionOnlyTakesRequestedQueuedItems() {
+        EngineFuel fuel = new EngineFuel();
+        fuel.insert(false, 10);
+        fuel.tick(false);
+        assertEquals(3, fuel.extract(3));
+        assertEquals(6, fuel.queued());
+        assertEquals(1599, fuel.remaining());
+        assertEquals(0, fuel.extract(-5));
+        assertEquals(6, fuel.extract(100));
+        assertEquals(0, fuel.queued());
+    }
 }

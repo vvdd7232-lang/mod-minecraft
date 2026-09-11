@@ -34,6 +34,11 @@ public final class MechanicalPlatform {
     @SuppressWarnings("unchecked")
     public static <T extends BlockEntity> BlockEntityType<T> shaftType() { return (BlockEntityType<T>) ElementalStaves.DRIVE_SHAFT_ENTITY.get(); }
     public static void init(IEventBus bus) {
+        bus.addListener((net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent event) -> {
+            event.registerBlockEntity(net.neoforged.neoforge.capabilities.Capabilities.ItemHandler.BLOCK,
+                    MechanicalPlatform.<BlockEntity>engineType(),
+                    (be, side) -> be instanceof EngineAccess engine ? new EngineItemHandler(engine) : null);
+        });
         bus.addListener((FMLCommonSetupEvent event) -> {
             if (hasCreate()) event.enqueueWork(CreateIntegration::setup);
         });

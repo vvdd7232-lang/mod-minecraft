@@ -55,10 +55,15 @@
   "message.elementalstaves.engine.full": "Fuel slot is full or contains a different coal type.",
   "message.elementalstaves.engine.status": "Fuel: %s | Burn remaining: %s s | %s",
   "message.elementalstaves.engine.paused": "Paused by redstone",
-  "message.elementalstaves.engine.running": "Running: 40 RPM",
+  "message.elementalstaves.engine.running": "Combustion active",
   "message.elementalstaves.engine.idle": "Waiting for fuel",
   "tooltip.elementalstaves.coal_engine.1": "Use coal: +1; sneak-use: insert stack. 40 RPM.",
   "tooltip.elementalstaves.coal_engine.2": "Redstone pauses. Sneak-use empty hand: retrieve queued fuel.",
   "tooltip.elementalstaves.drive_shaft.1": "Connect straight to the engine flywheel. Up to 32 shafts.",
-  "tooltip.elementalstaves.drive_shaft.2": "Axis follows placement face. No turns or machines yet."
+  "tooltip.elementalstaves.drive_shaft.2": "Axis follows placement face. No turns or machines yet.",
+  "tooltip.elementalstaves.create.speed": "  Network speed: %s RPM",
+  "tooltip.elementalstaves.create.fuel": "  Queued fuel: %s | Burn: %s s",
+  "tooltip.elementalstaves.create.mode": "Create: kinetic network, wrench and engineer goggles.",
+  "tooltip.elementalstaves.create.capacity": "Engine: 40 RPM, 2560 SU. Redstone pauses combustion.",
+  "tooltip.elementalstaves.create.shaft": "Bidirectional transmission; Create stress and network rules apply."
 }
