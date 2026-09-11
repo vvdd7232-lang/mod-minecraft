@@ -58,6 +58,12 @@ public final class EarthStaffItem extends BaseStaffItem {
     }
 
     @Override
+    public net.minecraft.world.InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+        return castSpell(level, player, hand, player.isShiftKeyDown()
+                ? StaffMagic.Spell.STONE_SKIN : StaffMagic.Spell.QUAKE);
+    }
+
+    @Override
     public InteractionResult useOn(UseOnContext context) {
         Player player = context.getPlayer();
         if (player == null) {

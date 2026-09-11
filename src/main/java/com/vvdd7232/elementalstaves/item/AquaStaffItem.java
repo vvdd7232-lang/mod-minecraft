@@ -38,11 +38,18 @@ public final class AquaStaffItem extends BaseStaffItem {
     }
 
     @Override
+    public net.minecraft.world.InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+        if (player.isShiftKeyDown()) return castSpell(level, player, hand, StaffMagic.Spell.FROST);
+        return net.minecraft.world.InteractionResultHolder.pass(player.getItemInHand(hand));
+    }
+
+    @Override
     public InteractionResult useOn(UseOnContext context) {
         Player player = context.getPlayer();
         if (player == null) {
             return InteractionResult.PASS;
         }
+        if (player.isShiftKeyDown()) return use(context.getLevel(), player, context.getHand()).getResult();
         Level level = context.getLevel();
         ItemStack stack = context.getItemInHand();
         if (level.isClientSide) {
@@ -61,12 +68,12 @@ public final class AquaStaffItem extends BaseStaffItem {
             player.displayClientMessage(Component.translatable("message.elementalstaves.aqua.too_far"), true);
             return InteractionResult.FAIL;
         }
-        if (!serverLevel.mayInteract(serverPlayer, clickedPos) || !serverLevel.mayInteract(serverPlayer, waterCell)) {
+        if (!player.mayBuild() || !serverLevel.mayInteract(serverPlayer, clickedPos) || !serverLevel.mayInteract(serverPlayer, waterCell)) {
             player.displayClientMessage(Component.translatable("message.elementalstaves.common.protected"), true);
             return InteractionResult.FAIL;
         }
 
-        int fires = douseFires(serverLevel, clickedPos);
+        int fires = douseFires(serverLevel, serverPlayer, clickedPos);
         boolean splashed = douseCreatures(serverLevel, clickedPos);
         boolean poured = pourWater(serverLevel, waterCell);
 
@@ -85,11 +92,13 @@ public final class AquaStaffItem extends BaseStaffItem {
     }
 
     /** Replaces every fire block in a cube around {@code center} with air. Returns how many were put out. */
-    private static int douseFires(ServerLevel level, BlockPos center) {
+    private static int douseFires(ServerLevel level, ServerPlayer player, BlockPos center) {
         int count = 0;
         for (BlockPos pos : BlockPos.betweenClosed(
                 center.offset(-FIRE_RADIUS, -FIRE_RADIUS, -FIRE_RADIUS),
                 center.offset(FIRE_RADIUS, FIRE_RADIUS, FIRE_RADIUS))) {
+            if (!level.hasChunkAt(pos) || !level.mayInteract(player, pos) || !player.mayBuild()
+                    || !level.getWorldBorder().isWithinBounds(pos)) continue;
             BlockState state = level.getBlockState(pos);
             if (state.is(Blocks.FIRE) || state.is(Blocks.SOUL_FIRE)) {
                 level.setBlock(pos, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
@@ -123,6 +132,8 @@ public final class AquaStaffItem extends BaseStaffItem {
 
     /** Places a still water source into {@code waterCell} when it can be replaced. */
     private static boolean pourWater(ServerLevel level, BlockPos waterCell) {
+        if (level.dimensionType().ultraWarm() || !level.isInWorldBounds(waterCell)
+                || !level.getWorldBorder().isWithinBounds(waterCell)) return false;
         BlockState state = level.getBlockState(waterCell);
         if (state.canBeReplaced() && state.getFluidState().isEmpty()
                 && level.setBlock(waterCell, Blocks.WATER.defaultBlockState(), Block.UPDATE_ALL)) {
