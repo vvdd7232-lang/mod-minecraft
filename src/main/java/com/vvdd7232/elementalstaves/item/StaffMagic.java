@@ -192,10 +192,26 @@ final class StaffMagic {
                 }
             }
         }
-        if (changed) level.playSound(null, p.blockPosition(),
-                spell == Spell.CHAIN || spell == Spell.STORM ? SoundEvents.TRIDENT_THUNDER
-                : spell == Spell.HEAL || spell == Spell.SANCTUARY ? SoundEvents.AMETHYST_BLOCK_CHIME
-                : SoundEvents.BLAZE_SHOOT, SoundSource.PLAYERS, 0.7F, 1.15F);
+        if (changed) {
+            if (spell == Spell.NOVA || spell == Spell.QUAKE || spell == Spell.SANCTUARY) {
+                double radius = spell == Spell.SANCTUARY ? 8 : 7;
+                for (int i = 0; i < 48; i++) {
+                    double angle = i * Math.PI * 2 / 48;
+                    level.sendParticles(spell == Spell.NOVA ? ParticleTypes.FLAME
+                                    : spell == Spell.SANCTUARY ? ParticleTypes.HAPPY_VILLAGER : ParticleTypes.CLOUD,
+                            origin.x + Math.cos(angle) * radius, origin.y + 0.2,
+                            origin.z + Math.sin(angle) * radius, 1, 0, 0, 0, 0);
+                }
+            }
+            level.playSound(null, p.blockPosition(), switch (spell) {
+                case CHAIN, STORM -> SoundEvents.TRIDENT_THUNDER;
+                case HEAL, SANCTUARY -> SoundEvents.EXPERIENCE_ORB_PICKUP;
+                case GUST, DASH -> SoundEvents.BREEZE_SHOOT;
+                case FROST -> SoundEvents.GLASS_BREAK;
+                case QUAKE, STONE_SKIN -> SoundEvents.STONE_BREAK;
+                default -> SoundEvents.BLAZE_SHOOT;
+            }, SoundSource.PLAYERS, 0.7F, 1.15F);
+        }
         return changed;
     }
 }

@@ -66,7 +66,7 @@ public final class EarthStaffItem extends BaseStaffItem {
     @Override
     public InteractionResult useOn(UseOnContext context) {
         Player player = context.getPlayer();
-        if (player == null) {
+        if (player == null || player.isSpectator() || !player.mayBuild()) {
             return InteractionResult.PASS;
         }
 
@@ -92,6 +92,11 @@ public final class EarthStaffItem extends BaseStaffItem {
     }
 
     private InteractionResult selectSource(ServerLevel level, ServerPlayer player, ItemStack stack, BlockPos source) {
+        if (!withinRange(player, source) || !level.hasChunkAt(source)
+                || !level.isInWorldBounds(source) || !level.getWorldBorder().isWithinBounds(source)) {
+            player.displayClientMessage(Component.translatable("message.elementalstaves.earth.too_far"), true);
+            return InteractionResult.FAIL;
+        }
         BlockState state = level.getBlockState(source);
         if (!level.mayInteract(player, source)) {
             player.displayClientMessage(Component.translatable("message.elementalstaves.common.protected"), true);
@@ -116,6 +121,10 @@ public final class EarthStaffItem extends BaseStaffItem {
 
     private InteractionResult moveSelectedBlock(ServerLevel level, ServerPlayer player, ItemStack stack, InteractionHand hand, SourceSelection selection, BlockPos destination) {
         BlockPos source = selection.pos();
+        if (!level.hasChunkAt(source) || !level.hasChunkAt(destination)) {
+            player.displayClientMessage(Component.translatable("message.elementalstaves.earth.too_far"), true);
+            return InteractionResult.FAIL;
+        }
         BlockState sourceState = level.getBlockState(source);
 
         if (!withinRange(player, source) || !withinRange(player, destination)

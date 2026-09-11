@@ -46,7 +46,7 @@ public final class AquaStaffItem extends BaseStaffItem {
     @Override
     public InteractionResult useOn(UseOnContext context) {
         Player player = context.getPlayer();
-        if (player == null) {
+        if (player == null || player.isSpectator()) {
             return InteractionResult.PASS;
         }
         if (player.isShiftKeyDown()) return use(context.getLevel(), player, context.getHand()).getResult();
