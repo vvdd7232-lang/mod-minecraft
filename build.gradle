@@ -89,9 +89,12 @@ var generateModMetadata = tasks.register('generateModMetadata', ProcessResources
 sourceSets.main.resources.srcDir generateModMetadata
 neoForge.ideSyncTask generateModMetadata
 
+// Resolve the name during configuration; rename runs without access to Project
+// when Gradle's configuration cache is enabled.
+def bundledLicenseName = "LICENSE_${mod_id}".toString()
 tasks.named('jar', Jar).configure {
     from('LICENSE') {
-        rename { "${it}_${project.mod_id}" }
+        rename { bundledLicenseName }
     }
 }
 
