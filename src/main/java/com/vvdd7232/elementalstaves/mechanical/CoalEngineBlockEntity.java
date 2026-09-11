@@ -16,10 +16,12 @@ import net.minecraft.world.level.block.state.BlockState;
 /** One coal/charcoal slot, no menu. Burn progress pauses under a redstone signal. */
 public final class CoalEngineBlockEntity extends RotatingBlockEntity {
     private final EngineFuel fuel = new EngineFuel();
+    private long lastServerTick = -1;
 
     public CoalEngineBlockEntity(BlockPos p, BlockState s) { super(ElementalStaves.COAL_ENGINE_ENTITY.get(), p, s); }
 
     public boolean insert(Player player, ItemStack stack) {
+        if (!stack.is(Items.COAL) && !stack.is(Items.CHARCOAL)) return false;
         boolean isCharcoal = stack.is(Items.CHARCOAL);
         int count = fuel.insert(isCharcoal, player.isShiftKeyDown() ? stack.getCount() : 1);
         if (count == 0) {
@@ -60,10 +62,15 @@ public final class CoalEngineBlockEntity extends RotatingBlockEntity {
 
     public static void tick(Level level, BlockPos pos, BlockState state, CoalEngineBlockEntity entity) {
         if (level.isClientSide) { entity.animate(level, state.getValue(CoalEngineBlock.LIT)); return; }
+        entity.lastServerTick = level.getGameTime();
         boolean running = entity.fuel.tick(level.hasNeighborSignal(pos));
         if (running) entity.setChanged();
         if (running != state.getValue(CoalEngineBlock.LIT))
             level.setBlock(pos, state.setValue(CoalEngineBlock.LIT, running), Block.UPDATE_ALL);
+    }
+
+    public boolean isTicking() {
+        return level != null && lastServerTick >= 0 && level.getGameTime() - lastServerTick <= 1;
     }
 
     @Override protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {

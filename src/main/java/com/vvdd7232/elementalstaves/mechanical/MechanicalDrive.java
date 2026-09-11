@@ -21,6 +21,7 @@ public final class MechanicalDrive {
                 if (state.is(ElementalStaves.COAL_ENGINE.get())) {
                     return state.getValue(CoalEngineBlock.FACING) == direction.getOpposite()
                             && state.getValue(CoalEngineBlock.LIT)
+                            && level.getBlockEntity(next) instanceof CoalEngineBlockEntity engine && engine.isTicking()
                             ? DriveLine.Node.POWERED_ENGINE : DriveLine.Node.BLOCKED;
                 }
                 return state.is(ElementalStaves.DRIVE_SHAFT.get())
