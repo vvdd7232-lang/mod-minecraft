@@ -77,7 +77,7 @@ public final class LifeStaffItem extends BaseStaffItem {
      * Heals {@code target} and clears its harmful effects. Returns false (and spends
      * nothing) when the target is already healthy and carries no harmful effects.
      */
-    private static boolean heal(ServerLevel level, ServerPlayer caster, ItemStack stack, InteractionHand hand,
+    private boolean heal(ServerLevel level, ServerPlayer caster, ItemStack stack, InteractionHand hand,
                                 LivingEntity target, float amount, int durabilityCost) {
         boolean healed = false;
         if (target.getHealth() < target.getMaxHealth()) {
