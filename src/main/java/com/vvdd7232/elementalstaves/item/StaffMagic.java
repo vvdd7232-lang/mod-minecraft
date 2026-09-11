@@ -37,6 +37,15 @@ final class StaffMagic {
 
     private StaffMagic() {}
 
+    // Minecraft exposes some sound constants directly and others as registry holders.
+    private static net.minecraft.sounds.SoundEvent sound(net.minecraft.sounds.SoundEvent event) {
+        return event;
+    }
+
+    private static net.minecraft.sounds.SoundEvent sound(net.minecraft.core.Holder<net.minecraft.sounds.SoundEvent> event) {
+        return event.value();
+    }
+
     // Players, pets (including other players' pets), villagers and teammates are not combat targets.
     private static boolean enemy(ServerPlayer p, LivingEntity e) {
         return e instanceof Mob && e.isAlive() && !e.isInvulnerable() && !e.isAlliedTo(p)
@@ -204,12 +213,12 @@ final class StaffMagic {
                 }
             }
             level.playSound(null, p.blockPosition(), switch (spell) {
-                case CHAIN, STORM -> SoundEvents.TRIDENT_THUNDER;
-                case HEAL, SANCTUARY -> SoundEvents.EXPERIENCE_ORB_PICKUP;
-                case GUST, DASH -> SoundEvents.BREEZE_SHOOT;
-                case FROST -> SoundEvents.GLASS_BREAK;
-                case QUAKE, STONE_SKIN -> SoundEvents.STONE_BREAK;
-                default -> SoundEvents.BLAZE_SHOOT;
+                case CHAIN, STORM -> sound(SoundEvents.TRIDENT_THUNDER);
+                case HEAL, SANCTUARY -> sound(SoundEvents.EXPERIENCE_ORB_PICKUP);
+                case GUST, DASH -> sound(SoundEvents.BREEZE_SHOOT);
+                case FROST -> sound(SoundEvents.GLASS_BREAK);
+                case QUAKE, STONE_SKIN -> sound(SoundEvents.STONE_BREAK);
+                default -> sound(SoundEvents.BLAZE_SHOOT);
             }, SoundSource.PLAYERS, 0.7F, 1.15F);
         }
         return changed;
