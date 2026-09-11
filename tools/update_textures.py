@@ -186,7 +186,7 @@ titlefont=ImageFont.truetype(font_path,26) if Path(font_path).exists() else font
 sheet=Image.new('RGB',(1000,1060),'#202a2e');d=ImageDraw.Draw(sheet)
 d.text((28,20),'ELEMENTAL STAVES / VANILLA TEXTURE UPDATE',font=titlefont,fill='#d2e6da')
 d.text((28,58),'16 x 16 original pixel art  /  steel, crystal & six elements  /  armor UV: 64 x 32',font=font,fill='#91bec1')
-paths=sorted((TEX/'block').glob('*.png'))+sorted((TEX/'item').glob('*.png'))
+paths=sorted(p for p in (TEX/'block').glob('*.png') if not p.stem.startswith('engine_') and p.stem != 'shaft_bearing')+sorted((TEX/'item').glob('*.png'))
 for idx,p in enumerate(paths):
     x=24+(idx%7)*138;y=100+(idx//7)*184
     d.rectangle((x,y,x+119,y+119),fill='#303e43')

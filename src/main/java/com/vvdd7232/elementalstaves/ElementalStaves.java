@@ -1,6 +1,7 @@
 package com.vvdd7232.elementalstaves;
 
 import com.mojang.logging.LogUtils;
+import com.vvdd7232.elementalstaves.item.MechanicalBlockItem;
 import com.vvdd7232.elementalstaves.mechanical.CoalEngineBlock;
 import com.vvdd7232.elementalstaves.mechanical.CoalEngineBlockEntity;
 import com.vvdd7232.elementalstaves.mechanical.DriveShaftBlock;
@@ -61,8 +62,10 @@ public final class ElementalStaves {
                     .lightLevel(state -> state.getValue(CoalEngineBlock.LIT) ? 8 : 0)));
     public static final DeferredBlock<DriveShaftBlock> DRIVE_SHAFT = BLOCKS.register("drive_shaft",
             () -> new DriveShaftBlock(copiedMineableProperties(Blocks.IRON_BLOCK).noOcclusion()));
-    public static final DeferredItem<BlockItem> COAL_ENGINE_ITEM = ITEMS.registerSimpleBlockItem(COAL_ENGINE);
-    public static final DeferredItem<BlockItem> DRIVE_SHAFT_ITEM = ITEMS.registerSimpleBlockItem(DRIVE_SHAFT);
+    public static final DeferredItem<BlockItem> COAL_ENGINE_ITEM = ITEMS.register("coal_engine",
+            () -> new MechanicalBlockItem(COAL_ENGINE.get(), new Item.Properties(), "coal_engine"));
+    public static final DeferredItem<BlockItem> DRIVE_SHAFT_ITEM = ITEMS.register("drive_shaft",
+            () -> new MechanicalBlockItem(DRIVE_SHAFT.get(), new Item.Properties(), "drive_shaft"));
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<CoalEngineBlockEntity>> COAL_ENGINE_ENTITY =
             BLOCK_ENTITIES.register("coal_engine", () -> BlockEntityType.Builder.of(CoalEngineBlockEntity::new, COAL_ENGINE.get()).build(null));
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<DriveShaftBlockEntity>> DRIVE_SHAFT_ENTITY =

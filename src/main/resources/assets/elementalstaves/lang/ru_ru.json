@@ -56,5 +56,9 @@
   "message.elementalstaves.engine.status": "Топливо: %s | Осталось горения: %s с | %s",
   "message.elementalstaves.engine.paused": "Пауза: сигнал редстоуна",
   "message.elementalstaves.engine.running": "Работает: 40 об/мин",
-  "message.elementalstaves.engine.idle": "Ожидание топлива"
+  "message.elementalstaves.engine.idle": "Ожидание топлива",
+  "tooltip.elementalstaves.coal_engine.1": "ПКМ углём: +1; Shift + ПКМ: загрузить стопку. 40 об/мин.",
+  "tooltip.elementalstaves.coal_engine.2": "Редстоун: пауза. Shift + ПКМ пустой рукой: забрать запас.",
+  "tooltip.elementalstaves.drive_shaft.1": "Соедините по прямой с маховиком двигателя. До 32 валов.",
+  "tooltip.elementalstaves.drive_shaft.2": "Ось задаёт грань установки. Поворотов и станков пока нет."
 }

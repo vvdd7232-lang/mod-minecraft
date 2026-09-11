@@ -8,24 +8,25 @@ import net.minecraft.world.level.block.state.BlockState;
 
 /** Bounded straight-line transmission. Never loads chunks and never follows cycles. */
 public final class MechanicalDrive {
-    public static final int MAX_SHAFTS = 32;
+    public static final int MAX_SHAFTS = DriveLine.MAX_SHAFTS;
     private MechanicalDrive() {}
 
     public static boolean isDriven(Level level, BlockPos pos, Direction.Axis axis) {
         for (Direction direction : Direction.values()) {
             if (direction.getAxis() != axis) continue;
-            for (int distance = 1; distance <= MAX_SHAFTS; distance++) {
+            if (DriveLine.powered(distance -> {
                 BlockPos next = pos.relative(direction, distance);
-                if (!level.isInWorldBounds(next) || !level.hasChunkAt(next)) break;
+                if (!level.isInWorldBounds(next) || !level.hasChunkAt(next)) return DriveLine.Node.BLOCKED;
                 BlockState state = level.getBlockState(next);
                 if (state.is(ElementalStaves.COAL_ENGINE.get())) {
-                    if (state.getValue(CoalEngineBlock.FACING) == direction.getOpposite()
-                            && state.getValue(CoalEngineBlock.LIT)) return true;
-                    break;
+                    return state.getValue(CoalEngineBlock.FACING) == direction.getOpposite()
+                            && state.getValue(CoalEngineBlock.LIT)
+                            ? DriveLine.Node.POWERED_ENGINE : DriveLine.Node.BLOCKED;
                 }
-                if (!state.is(ElementalStaves.DRIVE_SHAFT.get())
-                        || state.getValue(DriveShaftBlock.AXIS) != axis) break;
-            }
+                return state.is(ElementalStaves.DRIVE_SHAFT.get())
+                        && state.getValue(DriveShaftBlock.AXIS) == axis
+                        ? DriveLine.Node.SHAFT : DriveLine.Node.BLOCKED;
+            })) return true;
         }
         return false;
     }

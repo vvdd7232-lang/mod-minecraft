@@ -78,11 +78,19 @@ for path in ['mineable/pickaxe','needs_stone_tool']:
         if ref not in data['values']:data['values'].append(ref)
     write(p,data)
 for locale,values in {
-'ru_ru':{'block.elementalstaves.coal_engine':'Угольный двигатель','block.elementalstaves.drive_shaft':'Приводной вал',
+'ru_ru':{'tooltip.elementalstaves.coal_engine.1':'ПКМ углём: +1; Shift + ПКМ: загрузить стопку. 40 об/мин.',
+ 'tooltip.elementalstaves.coal_engine.2':'Редстоун: пауза. Shift + ПКМ пустой рукой: забрать запас.',
+ 'tooltip.elementalstaves.drive_shaft.1':'Соедините по прямой с маховиком двигателя. До 32 валов.',
+ 'tooltip.elementalstaves.drive_shaft.2':'Ось задаёт грань установки. Поворотов и станков пока нет.',
+ 'block.elementalstaves.coal_engine':'Угольный двигатель','block.elementalstaves.drive_shaft':'Приводной вал',
 'message.elementalstaves.engine.full':'Топливный слот заполнен или занят другим видом угля.',
 'message.elementalstaves.engine.status':'Топливо: %s | Осталось горения: %s с | %s',
 'message.elementalstaves.engine.paused':'Пауза: сигнал редстоуна','message.elementalstaves.engine.running':'Работает: 40 об/мин','message.elementalstaves.engine.idle':'Ожидание топлива'},
-'en_us':{'block.elementalstaves.coal_engine':'Coal Engine','block.elementalstaves.drive_shaft':'Drive Shaft',
+'en_us':{'tooltip.elementalstaves.coal_engine.1':'Use coal: +1; sneak-use: insert stack. 40 RPM.',
+ 'tooltip.elementalstaves.coal_engine.2':'Redstone pauses. Sneak-use empty hand: retrieve queued fuel.',
+ 'tooltip.elementalstaves.drive_shaft.1':'Connect straight to the engine flywheel. Up to 32 shafts.',
+ 'tooltip.elementalstaves.drive_shaft.2':'Axis follows placement face. No turns or machines yet.',
+ 'block.elementalstaves.coal_engine':'Coal Engine','block.elementalstaves.drive_shaft':'Drive Shaft',
 'message.elementalstaves.engine.full':'Fuel slot is full or contains a different coal type.',
 'message.elementalstaves.engine.status':'Fuel: %s | Burn remaining: %s s | %s',
 'message.elementalstaves.engine.paused':'Paused by redstone','message.elementalstaves.engine.running':'Running: 40 RPM','message.elementalstaves.engine.idle':'Waiting for fuel'}

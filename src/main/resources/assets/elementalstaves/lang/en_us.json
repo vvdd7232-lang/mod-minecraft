@@ -56,5 +56,9 @@
   "message.elementalstaves.engine.status": "Fuel: %s | Burn remaining: %s s | %s",
   "message.elementalstaves.engine.paused": "Paused by redstone",
   "message.elementalstaves.engine.running": "Running: 40 RPM",
-  "message.elementalstaves.engine.idle": "Waiting for fuel"
+  "message.elementalstaves.engine.idle": "Waiting for fuel",
+  "tooltip.elementalstaves.coal_engine.1": "Use coal: +1; sneak-use: insert stack. 40 RPM.",
+  "tooltip.elementalstaves.coal_engine.2": "Redstone pauses. Sneak-use empty hand: retrieve queued fuel.",
+  "tooltip.elementalstaves.drive_shaft.1": "Connect straight to the engine flywheel. Up to 32 shafts.",
+  "tooltip.elementalstaves.drive_shaft.2": "Axis follows placement face. No turns or machines yet."
 }
