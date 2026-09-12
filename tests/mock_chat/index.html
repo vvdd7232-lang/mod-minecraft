@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <title>Mock AI Chat</title>
+  <style>
+    body { font-family: sans-serif; max-width: 760px; margin: 20px auto; }
+    #conversation { border: 1px solid #ccc; min-height: 300px; padding: 10px; }
+    .assistant { white-space: pre-wrap; background: #f3f3ff; margin: 8px 0; padding: 8px;
+                 border-radius: 8px; }
+    .user { white-space: pre-wrap; background: #f1fff1; margin: 8px 0; padding: 8px;
+            border-radius: 8px; text-align: right; }
+    #composer { border: 2px solid #88a; min-height: 60px; padding: 8px; margin-top: 10px;
+                border-radius: 8px; }
+    #send-btn { margin-top: 8px; padding: 6px 18px; }
+  </style>
+</head>
+<body>
+  <h1>Mock AI Chat</h1>
+  <div id="conversation"></div>
+  <div id="composer" contenteditable="true" data-placeholder="Напишите сообщение..."></div>
+  <button id="send-btn" type="button">Send</button>
+
+  <script>
+    window.sentMessages = [];
+
+    function sendMessage() {
+      const composer = document.getElementById('composer');
+      const text = composer.innerText;
+      if (!text.trim()) return;
+      const u = document.createElement('div');
+      u.className = 'user';
+      u.textContent = text;
+      document.getElementById('conversation').appendChild(u);
+      composer.innerHTML = '';
+      window.sentMessages.push(text);
+    }
+
+    document.getElementById('send-btn').addEventListener('click', sendMessage);
+    document.getElementById('composer').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        sendMessage();
+      }
+    });
+
+    // Эмулятор ответа ассистента: добавляет «пузырь» с тем же текстом,
+    // что вернула бы модель.
+    window.addAssistant = (text) => {
+      const d = document.createElement('div');
+      d.className = 'assistant';
+      d.textContent = text;
+      document.getElementById('conversation').appendChild(d);
+    };
+  </script>
+</body>
+</html>

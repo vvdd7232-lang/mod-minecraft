@@ -1,0 +1,17 @@
+# Виртуальные окружения и кэш Python
+.venv/
+venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Скачанный вручную Chromium для тестов (см. tests/README)
+tools/
+
+# Профиль браузера, запускаемого мостом
+.chrome-profile/
+
+# Локальный конфиг и логи
+config.yaml
+termbridge.log
+termbridge_last_output.txt
